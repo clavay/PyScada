@@ -337,6 +337,7 @@ class DeviceForm(forms.ModelForm):
         else:
             if hasattr(self.instance, "protocol_id") and \
                     hasattr(self.instance, "parent_device") and self.instance.parent_device() is not None and \
+                    self.instance.parent_device().protocol is not None and \
                     self.instance.parent_device().protocol.id == self.instance.protocol_id:
                 logger.error("Saving existing inline for %s" % self.instance.parent_device())
                 return True
