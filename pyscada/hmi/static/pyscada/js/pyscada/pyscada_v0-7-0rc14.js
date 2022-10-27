@@ -2728,25 +2728,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
  //                                                    Page's Settings
  //                             -----------------------------------------------------------
 
- // PADDING
- /**
-  * Adapt content padding top on navbar size
-  * @returns void
-  */
- function set_content_padding_top() {
-     navbar_height = $('.navbar-collapse')[0].offsetHeight;
-     if (navbar_height > 52) {
-         if ($('.navbar-toggle').css('display') !== 'none') {
-             navbar_height = navbar_height;
-         }else {
-             navbar_height = navbar_height - 52;
-         }
-     }else {
-         navbar_height = 0;
-     }
-     $('#content').css('padding-top', navbar_height + 'px');
- }
-
 
  // PAGES
  /**
@@ -3024,7 +3005,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
      if ($('#page-load-state').length > 0) {
          $('#page-load-state')[0].setAttribute('value', (Number.parseFloat(loading_states[key]).toFixed(2)));
      }
-     set_content_padding_top();
  }
 
  // Hide Loading
@@ -3035,7 +3015,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
  function hide_loading_state() {
      $('#page-load-label').hide();
      $('#page-load-state').hide();
-     set_content_padding_top();
  }
 
  // UPDATES :
@@ -3386,7 +3365,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
      //
      //
      $('#daterange span').html(start.format(daterange_format) + ' - ' + end.format(daterange_format));
-     set_content_padding_top();
  }
 
 
@@ -3639,7 +3617,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
      set_loading_state(1, 40);
 
      // padding top content
-     set_content_padding_top();
 
      // Show current page or first
      show_page();
@@ -3700,7 +3677,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
          toggle_daterangepicker();
          toggle_timeline();
          updatePyScadaPlots(false);
-         set_content_padding_top();
      });
 
      set_loading_state(1, loading_states[1] + 10);
@@ -3892,7 +3868,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
              };
              $.browserQueue.add(doBind, this);
        });
-       set_content_padding_top();
      });
      set_loading_state(1, loading_states[1] + 10);
 
@@ -3903,14 +3878,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
 
      set_loading_state(1, 100);
      hide_loading_state();
-
-     // move content on navbar show/hide events
-     $('.navbar-collapse').on('shown.bs.collapse', function() {
-         set_content_padding_top();
-     });
-     $('.navbar-collapse').on('hidden.bs.collapse', function() {
-         set_content_padding_top();
-     });
 
      // Set and show refresh rate input
      document.querySelectorAll('.refresh-rate-input').forEach(item => {item.oninput = function () {
