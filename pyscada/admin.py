@@ -238,7 +238,7 @@ class VariableAdminFrom(forms.ModelForm):
 
     def has_changed(self):
         # Force save inline for the good protocol if selected device and protocol_id exists
-        if self.data.get("device", None) != '':
+        if self.data.get("device", None) != '' and self.data.get("device", None) is not None:
             d = Device.objects.get(id=int(self.data.get("device", None)))
             if hasattr(self.instance, "protocol_id") and d is not None and \
                     d.protocol.id == self.instance.protocol_id:
