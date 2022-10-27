@@ -379,15 +379,14 @@ class DeviceAdmin(admin.ModelAdmin):
                 protocol_list.append(app.split(".")[1])
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        # For new device, show all the protocols from the installed apps in settings.py
+        # For existing device, show only the selected protocol to avoid changing
         if db_field.name == "protocol":
-            kwargs["queryset"] = DeviceProtocol.objects.filter(protocol__in=self.protocol_list)
+            if 'object_id' in request.resolver_match.kwargs and Device.objects.get(id=request.resolver_match.kwargs['object_id']) is not None:
+                kwargs["queryset"] = DeviceProtocol.objects.filter(protocol__in=[Device.objects.get(id=request.resolver_match.kwargs['object_id']).protocol.protocol,])
+            else:
+                kwargs["queryset"] = DeviceProtocol.objects.filter(protocol__in=self.protocol_list)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-    # Disable changing protocol
-    def get_readonly_fields(self, request, obj=None):
-        if obj is not None and obj.protocol is not None:
-            return ['protocol']
-        return []
 
     # Add JS file to display the right inline
     class Media:
