@@ -335,7 +335,7 @@ Licensed under the GPL.
   */
  var VARIABLE_PROPERTIES_LAST_MODIFIED = {};
 
-
+var store_temp_ajax_data = null;
 
  //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -841,17 +841,21 @@ Licensed under the GPL.
 - @param {string} get_data name of the data config wanted
 - @returns {Array<object>} dict of (id: value) of found values
 */
-function get_config_from_hidden_configs(type,filter_data,get_data){
-    var result = {}
+function get_config_from_hidden_configs(type,filter_data='id',get_data='id'){
+    var result = {};
+    if (typeof(type)!== 'string' || typeof(filter_data) !== 'string' || typeof(get_data) !== 'string' || filter_data === '' || get_data === '' || type === '') {
+      return result;
+    };
     var query = document.querySelectorAll("." + type + "-config2")
     query.forEach(item => {
-        var id = item.dataset.id;
+        //var id = item.dataset.id;
+        var id = item.getAttribute("data-" + filter_data);
         var r = item.getAttribute("data-" + get_data);
         if (id in result === false && typeof(r) !== "undefined") {
             result[id] = r;
         };
     });
-    return result
+    return result;
 }
 
 
@@ -895,8 +899,9 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                  data_handler_ajax(0, VARIABLE_KEYS, VARIABLE_PROPERTY_KEYS, LAST_QUERY_TIME);
              }
              // fetch historic data
-             if(FETCH_DATA_PENDING<=1){
+             else if(FETCH_DATA_PENDING<=0){
                  if(!INIT_STATUS_VARIABLES_DONE){
+                 loading_states[4] || set_loading_state(4, 0);
                  // first load STATUS_VARIABLES
                      var var_count = 0;
                      var vars = [];
@@ -913,16 +918,19 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                          if(var_count >= 5){break;}
                      }
                      if(var_count>0){
-                         set_loading_state(4, (loading_states[4] || 0) + 100*var_count/STATUS_VARIABLE_KEYS.count());
                          data_handler_ajax(1,vars,props,timestamp);
+                         set_loading_state(4, (loading_states[4] || 0) + 100*var_count/STATUS_VARIABLE_KEYS.count());
                      }else{
                          INIT_STATUS_VARIABLES_DONE = true;
                          set_loading_state(4, 100);
                      }
                  }else if (!INIT_CHART_VARIABLES_DONE){
+                     loading_states[5] || set_loading_state(5, 0);
                      var var_count = 0;
+                     var var_count_poll = 0;
                      var vars = [];
                      var props = [];
+                     var device_pulling_interval_sum = 0.0
                      if (DATA_FROM_TIMESTAMP == -1){
                          var timestamp = SERVER_TIME;
                      }else{
@@ -936,6 +944,8 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                              var_count++;
                              INIT_CHART_VARIABLES_COUNT++;
                              vars.push(key);
+                             dpi = get_config_from_hidden_config('device','id',get_config_from_hidden_config('variable','id',key,'device') ,'polling-interval');
+                             if (! isNaN(dpi)) {device_pulling_interval_sum += parseFloat(dpi);var_count_poll++;}else {console.log("ConfigV2 not found for var " + key);};
                              if (typeof(DATA[key]) == 'object'){
                                  timestamp = Math.max(timestamp,DATA[key][0][0]);
                              }else{
@@ -947,7 +957,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                         }
                      }
                      if(var_count>0){
-                         set_loading_state(5, (loading_states[5] || 0) + 100*var_count/CHART_VARIABLE_KEYS.count());
+                         //set_loading_state(5, (loading_states[5] || 0) + 100*var_count/CHART_VARIABLE_KEYS.count());
                          if (timestamp === DATA_FROM_TIMESTAMP){
                              timestamp = DATA_DISPLAY_TO_TIMESTAMP;
                          }
@@ -959,13 +969,47 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                              timestamp = 0;
                          }
                          //data_handler_ajax(1,vars,props,timestamp-120*60*1000,timestamp);
-                         data_handler_ajax(1,vars,props,DATA_FROM_TIMESTAMP,timestamp);
+                         request_duration = timestamp - DATA_FROM_TIMESTAMP
+                         // Fetch 10 000 points by var
+                         point_quantity_to_fetch_by_var = 1000;
+                         if (var_count_poll > 0) {
+                           duration_for_quantity = point_quantity_to_fetch_by_var * device_pulling_interval_sum / var_count_poll;
+                           duration_for_quantity = duration_for_quantity * 10 / var_count  //adjust for less than 10 vars
+                           duration_for_quantity = parseInt(duration_for_quantity);
+                           t_start = DATA_FROM_TIMESTAMP;
+                           t = Math.max(timestamp - duration_for_quantity * 1000, t_start);
+                         }else {
+                           t = t_start;
+                         }
+                         FETCH_DATA_PENDING++;
+                         store_temp_ajax_data = [1,vars,props,t_start,t,timestamp,duration_for_quantity]
+                         //data_handler_ajax(1,vars,props,DATA_FROM_TIMESTAMP,timestamp);
                      }else{
                          INIT_CHART_VARIABLES_DONE = true;
                          set_loading_state(5, 100);
                          $('.loadingAnimation').hide();
                      }
                  }
+             }else if (FETCH_DATA_PENDING<=1 && store_temp_ajax_data !== null) {
+               /*
+               */
+               vars = store_temp_ajax_data[1]
+               props = store_temp_ajax_data[2]
+               t_start = store_temp_ajax_data[3]
+               t = store_temp_ajax_data[4]
+               timestamp = store_temp_ajax_data[5]
+               duration_for_quantity = store_temp_ajax_data[6]
+               set_loading_state(5, (loading_states[5] || 0) + 100*(vars.length/CHART_VARIABLE_KEYS.count())*((timestamp-t)/(timestamp-t_start)));
+               //data_handler_ajax(1,vars,props,t_start,t);
+               data_handler_ajax(1,vars,props,t,timestamp);
+               if (t_start < t) {
+                 timestamp = t;
+                 t = Math.max(t - duration_for_quantity * 1000, t_start);
+                 store_temp_ajax_data = [1,vars,props,t_start,t,timestamp,duration_for_quantity];
+               }else {
+                 FETCH_DATA_PENDING--;
+                 store_temp_ajax_data = null;
+               }
              }
          }
      }
@@ -977,7 +1021,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
          if (STATUS_VARIABLE_KEYS.count() + CHART_VARIABLE_KEYS.count() == 0 && LOADING_PAGE_DONE == 0) {LOADING_PAGE_DONE = 1;show_page();hide_loading_state();}
          setTimeout(function() {data_handler();}, 100);
      }else{
-         if (LOADING_PAGE_DONE == 0) {LOADING_PAGE_DONE = 1;show_page();hide_loading_state();}
+         if (LOADING_PAGE_DONE == 0) {LOADING_PAGE_DONE = 1;show_page();hide_loading_state();loading_states={};}
          setTimeout(function() {data_handler();}, REFRESH_RATE);
      }
  }
