@@ -1040,7 +1040,9 @@ class MultiDeviceDAQProcessWorker(Process):
 
         self.grouped_ids = {}
         for item in Device.objects.filter(active=True, **self.device_filter):
-            self.grouped_ids[self.gen_group_id(item)] = [item]
+            if self.gen_group_id(item) not in self.grouped_ids:
+                self.grouped_ids[self.gen_group_id(item)] = []
+            self.grouped_ids[self.gen_group_id(item)].append(item)
 
         for key, values in self.grouped_ids.items():
             self.create_bp(key, values)
@@ -1235,6 +1237,8 @@ class SingleDeviceDAQProcess(Process):
         just re-init
         """
         #self.stop()
+        # Reset last query to resfresh all variables values
+        self.last_query = 0
         return self.init_process()
 
 
@@ -1354,4 +1358,6 @@ class MultiDeviceDAQProcess(Process):
         just re-init
         """
         #self.stop()
+        # Reset last query to resfresh all variables values
+        self.last_query = 0
         return self.init_process()

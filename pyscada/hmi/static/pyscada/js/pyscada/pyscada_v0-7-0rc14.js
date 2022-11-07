@@ -1,6 +1,6 @@
 /* Javascript library for the PyScada web client based on jquery and flot,
 
-version 0.7.1rc1
+version 0.7.1rc2
 
 Copyright (c) 2013-2019 Martin Schröder, Camille Lavayssière
 Licensed under the GPL.
@@ -161,6 +161,13 @@ Licensed under the GPL.
   * @type {number}
   */
  var DATA_OUT_OF_DATE_ALERT_ID = '';
+
+
+  /**
+  * State of the daterangepicker
+  * @type {boolean}
+  */
+ var DATERANGEPICKER_SET = false;
 
 
  //                             -----------------------------------------------------------
@@ -328,7 +335,7 @@ Licensed under the GPL.
   */
  var VARIABLE_PROPERTIES_LAST_MODIFIED = {};
 
-
+var store_temp_ajax_data = null;
 
  //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -834,17 +841,21 @@ Licensed under the GPL.
 - @param {string} get_data name of the data config wanted
 - @returns {Array<object>} dict of (id: value) of found values
 */
-function get_config_from_hidden_configs(type,filter_data,get_data){
-    var result = {}
+function get_config_from_hidden_configs(type,filter_data='id',get_data='id'){
+    var result = {};
+    if (typeof(type)!== 'string' || typeof(filter_data) !== 'string' || typeof(get_data) !== 'string' || filter_data === '' || get_data === '' || type === '') {
+      return result;
+    };
     var query = document.querySelectorAll("." + type + "-config2")
     query.forEach(item => {
-        var id = item.dataset.id;
+        //var id = item.dataset.id;
+        var id = item.getAttribute("data-" + filter_data);
         var r = item.getAttribute("data-" + get_data);
         if (id in result === false && typeof(r) !== "undefined") {
             result[id] = r;
         };
     });
-    return result
+    return result;
 }
 
 
@@ -888,8 +899,9 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                  data_handler_ajax(0, VARIABLE_KEYS, VARIABLE_PROPERTY_KEYS, LAST_QUERY_TIME);
              }
              // fetch historic data
-             if(FETCH_DATA_PENDING<=1){
+             else if(FETCH_DATA_PENDING<=0){
                  if(!INIT_STATUS_VARIABLES_DONE){
+                 loading_states[4] || set_loading_state(4, 0);
                  // first load STATUS_VARIABLES
                      var var_count = 0;
                      var vars = [];
@@ -906,16 +918,19 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                          if(var_count >= 5){break;}
                      }
                      if(var_count>0){
-                         set_loading_state(4, (loading_states[4] || 0) + 100*var_count/STATUS_VARIABLE_KEYS.count());
                          data_handler_ajax(1,vars,props,timestamp);
+                         set_loading_state(4, (loading_states[4] || 0) + 100*var_count/STATUS_VARIABLE_KEYS.count());
                      }else{
                          INIT_STATUS_VARIABLES_DONE = true;
                          set_loading_state(4, 100);
                      }
                  }else if (!INIT_CHART_VARIABLES_DONE){
+                     loading_states[5] || set_loading_state(5, 0);
                      var var_count = 0;
+                     var var_count_poll = 0;
                      var vars = [];
                      var props = [];
+                     var device_pulling_interval_sum = 0.0
                      if (DATA_FROM_TIMESTAMP == -1){
                          var timestamp = SERVER_TIME;
                      }else{
@@ -929,29 +944,72 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                              var_count++;
                              INIT_CHART_VARIABLES_COUNT++;
                              vars.push(key);
+                             dpi = get_config_from_hidden_config('device','id',get_config_from_hidden_config('variable','id',key,'device') ,'polling-interval');
+                             if (! isNaN(dpi)) {device_pulling_interval_sum += parseFloat(dpi);var_count_poll++;}else {console.log("ConfigV2 not found for var " + key);};
                              if (typeof(DATA[key]) == 'object'){
                                  timestamp = Math.max(timestamp,DATA[key][0][0]);
+                             }else{
+                             console.log(key);
+                                // if a key doesn't exist in DATA timestamp to is set to now
+                                timestamp = SERVER_TIME;
                              }
                              if(var_count >= 10){break;}
                         }
                      }
                      if(var_count>0){
-                         set_loading_state(5, (loading_states[5] || 0) + 100*var_count/CHART_VARIABLE_KEYS.count());
+                         //set_loading_state(5, (loading_states[5] || 0) + 100*var_count/CHART_VARIABLE_KEYS.count());
                          if (timestamp === DATA_FROM_TIMESTAMP){
                              timestamp = DATA_DISPLAY_TO_TIMESTAMP;
                          }
                          if (timestamp == -1){
                              //var timestamp = SERVER_TIME;
-                             var timestamp = DATA_TO_TIMESTAMP;
+                             timestamp = DATA_TO_TIMESTAMP;
+                         }
+                         if (timestamp == SERVER_TIME){
+                             timestamp = 0;
                          }
                          //data_handler_ajax(1,vars,props,timestamp-120*60*1000,timestamp);
-                         data_handler_ajax(1,vars,props,DATA_FROM_TIMESTAMP,timestamp);
+                         request_duration = timestamp - DATA_FROM_TIMESTAMP
+                         // Fetch 10 000 points by var
+                         point_quantity_to_fetch_by_var = 1000;
+                         if (var_count_poll > 0) {
+                           duration_for_quantity = point_quantity_to_fetch_by_var * device_pulling_interval_sum / var_count_poll;
+                           duration_for_quantity = duration_for_quantity * 10 / var_count  //adjust for less than 10 vars
+                           duration_for_quantity = parseInt(duration_for_quantity);
+                           t_start = DATA_FROM_TIMESTAMP;
+                           t = Math.max(timestamp - duration_for_quantity * 1000, t_start);
+                         }else {
+                           t = t_start;
+                         }
+                         FETCH_DATA_PENDING++;
+                         store_temp_ajax_data = [1,vars,props,t_start,t,timestamp,duration_for_quantity]
+                         //data_handler_ajax(1,vars,props,DATA_FROM_TIMESTAMP,timestamp);
                      }else{
                          INIT_CHART_VARIABLES_DONE = true;
                          set_loading_state(5, 100);
                          $('.loadingAnimation').hide();
                      }
                  }
+             }else if (FETCH_DATA_PENDING<=1 && store_temp_ajax_data !== null) {
+               /*
+               */
+               vars = store_temp_ajax_data[1]
+               props = store_temp_ajax_data[2]
+               t_start = store_temp_ajax_data[3]
+               t = store_temp_ajax_data[4]
+               timestamp = store_temp_ajax_data[5]
+               duration_for_quantity = store_temp_ajax_data[6]
+               set_loading_state(5, (loading_states[5] || 0) + 100*(vars.length/CHART_VARIABLE_KEYS.count())*((timestamp-t)/(timestamp-t_start)));
+               //data_handler_ajax(1,vars,props,t_start,t);
+               data_handler_ajax(1,vars,props,t,timestamp);
+               if (t_start < t) {
+                 timestamp = t;
+                 t = Math.max(t - duration_for_quantity * 1000, t_start);
+                 store_temp_ajax_data = [1,vars,props,t_start,t,timestamp,duration_for_quantity];
+               }else {
+                 FETCH_DATA_PENDING--;
+                 store_temp_ajax_data = null;
+               }
              }
          }
      }
@@ -963,7 +1021,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
          if (STATUS_VARIABLE_KEYS.count() + CHART_VARIABLE_KEYS.count() == 0 && LOADING_PAGE_DONE == 0) {LOADING_PAGE_DONE = 1;show_page();hide_loading_state();}
          setTimeout(function() {data_handler();}, 100);
      }else{
-         if (LOADING_PAGE_DONE == 0) {LOADING_PAGE_DONE = 1;show_page();hide_loading_state();}
+         if (LOADING_PAGE_DONE == 0) {LOADING_PAGE_DONE = 1;show_page();hide_loading_state();loading_states={};}
          setTimeout(function() {data_handler();}, REFRESH_RATE);
      }
  }
@@ -2450,7 +2508,119 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
      if ($("#" + window.location.hash.substr(1) + ".show_daterangepicker").length || $("#" + window.location.hash.substr(1) + ".show_timeline").length) {
          daterange_set(moment(DATA_FROM_TIMESTAMP), moment(DATA_TO_TIMESTAMP));
      }
+     if (DATERANGEPICKER_SET == false) {
+         set_datetimepicker();
+     }
  }
+
+
+// Date range picker
+ /**
+  * Set the date time range picker
+  * @returns void
+  */
+ function set_datetimepicker() {
+     if ($(".show_daterangepicker").length) {
+         $('#daterange').daterangepicker({
+             "showDropdowns": true,
+             "timePicker": true,
+             "timePicker24Hour": true,
+             "timePickerSeconds": true,
+             ranges: {
+                 'Last 10 Minutes': [moment().subtract(10, 'minutes'), moment()],
+                 'Last 30 Minutes': [moment().subtract(30, 'minutes'), moment()],
+                 'Last Hour': [moment().subtract(1, 'hours'), moment()],
+                 'Last 2 Hour': [moment().subtract(2, 'hours'), moment()],
+                 'Last 6 Hour': [moment().subtract(6, 'hours'), moment()],
+                 'Last 12 Hour': [moment().subtract(12, 'hours'), moment()],
+                 'Today': [moment().startOf('day'), moment()],
+                 'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+                 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                 'This Month': [moment().startOf('month'), moment()],
+                 'Previous Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                 'Last Month': [moment().subtract(1, 'month'), moment()],
+                 'Last 2 Month': [moment().subtract(2, 'month'), moment()],
+                 'Last 6 Month': [moment().subtract(6, 'month'), moment()],
+                 'This Year': [moment().startOf('year'), moment()],
+                 'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                 'Last Year': [moment().subtract(1, 'year'), moment()],
+             },
+             "locale": {
+                 "format": daterange_format,
+                 "separator": " - ",
+                 "applyLabel": "Apply",
+                 "cancelLabel": "Cancel",
+                 "fromLabel": "From",
+                 "toLabel": "To",
+                 "customRangeLabel": "Custom",
+                 "weekLabel": "W",
+                 "daysOfWeek": [
+                     "Mo",
+                     "Tu",
+                     "We",
+                     "Th",
+                     "Fr",
+                     "Sa",
+                     "Su",
+                 ],
+                 "monthNames": [
+                     "January",
+                     "February",
+                     "March",
+                     "April",
+                     "May",
+                     "June",
+                     "July",
+                     "August",
+                     "September",
+                     "October",
+                     "November",
+                     "December"
+                 ],
+                 "firstDay": 1
+             },
+             "alwaysShowCalendars": true,
+             "linkedCalendars": false,
+             "startDate": moment(),
+             "endDate": moment().subtract(2, 'hours'),
+             "opens": "left"
+         }, function(start, end, label) {
+             LOADING_PAGE_DONE = 0;
+             set_loading_state(5, 0);
+             daterange_cb(start, end);
+             DATA_INIT_STATUS++;
+             DATA_FROM_TIMESTAMP = start.unix() * 1000;
+             if (label.indexOf('Last') !== -1 || label.indexOf('Today') !== -1 || label.indexOf('This Month') !== -1 || label.indexOf('This Year') !== -1) {
+                 PREVIOUS_AUTO_UPDATE_ACTIVE_STATE = true;
+             }else {
+                 PREVIOUS_AUTO_UPDATE_ACTIVE_STATE = false;
+             }
+             DATA_TO_TIMESTAMP = Math.min(end.unix() * 1000, SERVER_TIME);
+             DATA_BUFFER_SIZE = DATA_TO_TIMESTAMP - DATA_FROM_TIMESTAMP;
+             INIT_CHART_VARIABLES_DONE = false;
+             $('.loadingAnimation').show()
+         });
+         $('#daterange').on('show.daterangepicker', function(ev, picker) {
+             PREVIOUS_AUTO_UPDATE_ACTIVE_STATE = AUTO_UPDATE_ACTIVE
+             PREVIOUS_END_DATE = moment.min(picker.endDate, moment()).unix();
+             if($('.AutoUpdateButton').bootstrapSwitch('state') && AUTO_UPDATE_ACTIVE){
+                 auto_update_click();
+             };
+         });
+         $('#daterange').on('hide.daterangepicker', function(ev, picker) {
+             if(!$('.AutoUpdateButton').bootstrapSwitch('state') && PREVIOUS_AUTO_UPDATE_ACTIVE_STATE){
+                 auto_update_click();
+             };
+             DATA_DISPLAY_FROM_TIMESTAMP = -1;
+             DATA_DISPLAY_TO_TIMESTAMP = -1;
+             DATA_DISPLAY_WINDOW = DATA_TO_TIMESTAMP - DATA_FROM_TIMESTAMP;
+             set_x_axes();
+         });
+     }
+     DATERANGEPICKER_SET = true;
+}
+
 
 
  //                             -----------------------------------------------------------
@@ -2601,25 +2771,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
  //                             -----------------------------------------------------------
  //                                                    Page's Settings
  //                             -----------------------------------------------------------
-
- // PADDING
- /**
-  * Adapt content padding top on navbar size
-  * @returns void
-  */
- function set_content_padding_top() {
-     navbar_height = $('.navbar-collapse')[0].offsetHeight;
-     if (navbar_height > 52) {
-         if ($('.navbar-toggle').css('display') !== 'none') {
-             navbar_height = navbar_height;
-         }else {
-             navbar_height = navbar_height - 52;
-         }
-     }else {
-         navbar_height = 0;
-     }
-     $('#content').css('padding-top', navbar_height + 'px');
- }
 
 
  // PAGES
@@ -2898,7 +3049,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
      if ($('#page-load-state').length > 0) {
          $('#page-load-state')[0].setAttribute('value', (Number.parseFloat(loading_states[key]).toFixed(2)));
      }
-     set_content_padding_top();
  }
 
  // Hide Loading
@@ -2909,7 +3059,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
  function hide_loading_state() {
      $('#page-load-label').hide();
      $('#page-load-state').hide();
-     set_content_padding_top();
  }
 
  // UPDATES :
@@ -3260,7 +3409,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
      //
      //
      $('#daterange span').html(start.format(daterange_format) + ' - ' + end.format(daterange_format));
-     set_content_padding_top();
  }
 
 
@@ -3332,7 +3480,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
 
                          },
                          error: function(data) {
-                             add_notification('write property failed',3);
+                             add_notification('Operation not permitted (prop ' + key + ")",3);
                          }
                      });
                  }else {
@@ -3348,7 +3496,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
 
                      },
                      error: function(data) {
-                         add_notification('write task failed',3);
+                         add_notification('Operation not permitted (var ' + key + ")",3);
                      }
                  });
              };
@@ -3379,7 +3527,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                  success: function (data) {
                  },
                  error: function(data) {
-                     add_notification('form boolean true write task failed',3);
+                     add_notification('Operation not permitted (bool ' + key + ")",3);
                  }
              });
          }else if ($(tabinputs[i]).hasClass('btn-default')){
@@ -3392,7 +3540,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                  success: function (data) {
                  },
                  error: function(data) {
-                     add_notification('form boolean false write task failed',3);
+                     add_notification('Operation not permitted (bool ' + key + ")",3);
                  }
              });
          }else{
@@ -3404,7 +3552,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
 
                  },
                  error: function(data) {
-                     add_notification('form write task failed',3);
+                     add_notification('Operation not permitted (var ' + key + ")",3);
                      alert("Form Set NOK inputs "+data+" - key "+key+" - value "+value+" - item_type "+item_type + " - name "+var_name)
                  }
              });
@@ -3425,7 +3573,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
 
                      },
                      error: function(data) {
-                         add_notification('form dropdown write property failed',3);
+                         add_notification('Operation not permitted (dropdown ' + key + ")",3);
                      }
                  });
              }else {
@@ -3440,7 +3588,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
 
                  },
                  error: function(data) {
-                     add_notification('form dropdown write task failed',3);
+                     add_notification('Operation not permitted (dropdown ' + key + ")",3);
                      alert("Form Set NOK selects "+data+" - key "+key+" - value "+value+" - item_type "+item_type + " - name "+var_name)
                  }
              });
@@ -3481,7 +3629,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                  $('#'+id).addClass('btn-success');
              },
              error: function(data) {
-                 add_notification('boolean true write task failed',3);
+                 add_notification('Operation not permitted (bool ' + key + ")",3);
              }
          });
      }else if ($(this).hasClass('btn-success')){
@@ -3494,7 +3642,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                  $('#'+id).removeClass('btn-success');
              },
              error: function(data) {
-                 add_notification('boolean false write task failed',3);
+                 add_notification('Operation not permitted (bool ' + key + ")",3);
              }
          });
      }
@@ -3513,7 +3661,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
      set_loading_state(1, 40);
 
      // padding top content
-     set_content_padding_top();
 
      // Show current page or first
      show_page();
@@ -3574,7 +3721,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
          toggle_daterangepicker();
          toggle_timeline();
          updatePyScadaPlots(false);
-         set_content_padding_top();
      });
 
      set_loading_state(1, loading_states[1] + 10);
@@ -3766,7 +3912,6 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
              };
              $.browserQueue.add(doBind, this);
        });
-       set_content_padding_top();
      });
      set_loading_state(1, loading_states[1] + 10);
 
@@ -3775,116 +3920,8 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
          e.stopPropagation();
      });
 
-     // Date range picker
-     if ($(".show_daterangepicker").length) {
-         $('#daterange').daterangepicker({
-             "showDropdowns": true,
-             "timePicker": true,
-             "timePicker24Hour": true,
-             "timePickerSeconds": true,
-             ranges: {
-                 'Last 10 Minutes': [moment().subtract(10, 'minutes'), moment()],
-                 'Last 30 Minutes': [moment().subtract(30, 'minutes'), moment()],
-                 'Last Hour': [moment().subtract(1, 'hours'), moment()],
-                 'Last 2 Hour': [moment().subtract(2, 'hours'), moment()],
-                 'Last 6 Hour': [moment().subtract(6, 'hours'), moment()],
-                 'Last 12 Hour': [moment().subtract(12, 'hours'), moment()],
-                 'Today': [moment().startOf('day'), moment()],
-                 'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
-                 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                 'This Month': [moment().startOf('month'), moment()],
-                 'Previous Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                 'Last Month': [moment().subtract(1, 'month'), moment()],
-                 'Last 2 Month': [moment().subtract(2, 'month'), moment()],
-                 'Last 6 Month': [moment().subtract(6, 'month'), moment()],
-                 'This Year': [moment().startOf('year'), moment()],
-                 'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-                 'Last Year': [moment().subtract(1, 'year'), moment()],
-             },
-             "locale": {
-                 "format": daterange_format,
-                 "separator": " - ",
-                 "applyLabel": "Apply",
-                 "cancelLabel": "Cancel",
-                 "fromLabel": "From",
-                 "toLabel": "To",
-                 "customRangeLabel": "Custom",
-                 "weekLabel": "W",
-                 "daysOfWeek": [
-                     "Mo",
-                     "Tu",
-                     "We",
-                     "Th",
-                     "Fr",
-                     "Sa",
-                     "Su",
-                 ],
-                 "monthNames": [
-                     "January",
-                     "February",
-                     "March",
-                     "April",
-                     "May",
-                     "June",
-                     "July",
-                     "August",
-                     "September",
-                     "October",
-                     "November",
-                     "December"
-                 ],
-                 "firstDay": 1
-             },
-             "alwaysShowCalendars": true,
-             "linkedCalendars": false,
-             "startDate": moment(),
-             "endDate": moment().subtract(2, 'hours'),
-             "opens": "left"
-         }, function(start, end, label) {
-             LOADING_PAGE_DONE = 0;
-             set_loading_state(5, 0);
-             daterange_cb(start, end);
-             DATA_INIT_STATUS++;
-             DATA_FROM_TIMESTAMP = start.unix() * 1000;
-             if (label.indexOf('Last') !== -1 || label.indexOf('Today') !== -1 || label.indexOf('This Month') !== -1 || label.indexOf('This Year') !== -1) {
-                 PREVIOUS_AUTO_UPDATE_ACTIVE_STATE = true;
-             }else {
-                 PREVIOUS_AUTO_UPDATE_ACTIVE_STATE = false;
-             }
-             DATA_TO_TIMESTAMP = Math.min(end.unix() * 1000, SERVER_TIME);
-             DATA_BUFFER_SIZE = DATA_TO_TIMESTAMP - DATA_FROM_TIMESTAMP;
-             INIT_CHART_VARIABLES_DONE = false;
-             $('.loadingAnimation').show()
-         });
-         $('#daterange').on('show.daterangepicker', function(ev, picker) {
-             PREVIOUS_AUTO_UPDATE_ACTIVE_STATE = AUTO_UPDATE_ACTIVE
-             PREVIOUS_END_DATE = moment.min(picker.endDate, moment()).unix();
-             if($('.AutoUpdateButton').bootstrapSwitch('state') && AUTO_UPDATE_ACTIVE){
-                 auto_update_click();
-             };
-         });
-         $('#daterange').on('hide.daterangepicker', function(ev, picker) {
-             if(!$('.AutoUpdateButton').bootstrapSwitch('state') && PREVIOUS_AUTO_UPDATE_ACTIVE_STATE){
-                 auto_update_click();
-             };
-             DATA_DISPLAY_FROM_TIMESTAMP = -1;
-             DATA_DISPLAY_TO_TIMESTAMP = -1;
-             DATA_DISPLAY_WINDOW = DATA_TO_TIMESTAMP - DATA_FROM_TIMESTAMP;
-             set_x_axes();
-         });
-     }
-
      set_loading_state(1, 100);
      hide_loading_state();
-
-     // move content on navbar show/hide events
-     $('.navbar-collapse').on('shown.bs.collapse', function() {
-         set_content_padding_top();
-     });
-     $('.navbar-collapse').on('hidden.bs.collapse', function() {
-         set_content_padding_top();
-     });
 
      // Set and show refresh rate input
      document.querySelectorAll('.refresh-rate-input').forEach(item => {item.oninput = function () {
