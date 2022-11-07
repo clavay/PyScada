@@ -34,6 +34,7 @@ try:
     import channels.layers
     from channels.exceptions import InvalidChannelLayerError
     from channels.exceptions import ChannelFull
+    from redis.exceptions import ConnectionError
     from asgiref.sync import async_to_sync
     from asyncio import wait_for
     try:
@@ -47,10 +48,15 @@ try:
         logger.warning("Django Channels is not working. Missing config in settings ?")
         channels_driver = False
     else:
-        async def channels_test():
-            await wait_for(channels.layers.get_channel_layer().receive('test'), timeout=0.1)
-        async_to_sync(channels_test)()
-        channels_driver = True
+        try:
+            async def channels_test():
+                await wait_for(channels.layers.get_channel_layer().receive('test'), timeout=0.1)
+            async_to_sync(channels_test)()
+            channels_driver = True
+        except ConnectionError as e:
+            # Redis service failed to start
+            logger.warning("Redis service failed to start. %s" % e)
+            channels_driver = False
 except (ImportError, ModuleNotFoundError):
     channels_driver = False
 except ConnectionRefusedError:
