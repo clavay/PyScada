@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from pyscada.models import Device, Variable, VariableProperty, Color
+from pyscada.utils import _get_objects_for_html as get_objects_for_html
 
 from django.template.exceptions import TemplateDoesNotExist, TemplateSyntaxError
 from django.db import models
@@ -78,36 +79,9 @@ class WidgetContentModel(models.Model):
         return '', '', ''
 
     def _get_objects_for_html(self, list_to_append=None, obj=None, exclude_model_names=None):
-        if exclude_model_names is None:
-            exclude_model_names = list()
-        if list_to_append is None:
-            list_to_append = set()
         if obj is None:
             obj = self
-
-        if obj not in list_to_append:
-            list_to_append.update([obj])
-
-        # ForeignKey and OneToOne
-        for field in obj._meta.local_fields:
-            if type(field).many_to_one and getattr(obj, field.name) is not None and \
-                    field.name not in exclude_model_names:
-                if hasattr(field, '_get_objects_for_html'):
-                    list_to_append.update(field._get_objects_for_html(list_to_append))
-                else:
-                    list_to_append.update(self._get_objects_for_html(list_to_append, getattr(obj, field.name)))
-        #ManyToMany
-        for fields in obj._meta.local_many_to_many:
-            #logger.debug(fields)
-            for field in getattr(obj, fields.name).all():
-                #logger.debug(field)
-                if field not in exclude_model_names:
-                    if hasattr(field, '_get_objects_for_html'):
-                        list_to_append.update(field._get_objects_for_html(list_to_append))
-                    else:
-                        list_to_append.update(self._get_objects_for_html(list_to_append, field))
-
-        return list_to_append
+        return get_objects_for_html(list_to_append=list_to_append, obj=obj, exclude_model_names=exclude_model_names)
 
     def create_widget_content_entry(self):
         def fullname(o):

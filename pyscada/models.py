@@ -12,6 +12,7 @@ from django.utils.timezone import now, make_aware, is_naive
 from django.db.models.signals import post_save
 
 from pyscada.utils import blow_up_data, timestamp_to_datetime, min_pass, max_pass
+from pyscada.utils import _get_objects_for_html as get_objects_for_html
 
 from six import text_type
 import traceback
@@ -1228,6 +1229,18 @@ class Variable(models.Model):
                 logger.warning('%s duplicate values found of %s in dictionary %s' %
                                (len(self.dictionary.dictionaryitem_set.filter(label=str(value))), value, self.dictionary))
                 return float(self.dictionary.dictionaryitem_set.filter(label=str(value)).first().value)
+
+    def _get_objects_for_html(self, list_to_append=None, obj=None, exclude_model_names=None):
+        if obj is not None:
+            list_to_append = get_objects_for_html(list_to_append, obj, exclude_model_names)
+        else:
+            list_to_append = get_objects_for_html(list_to_append, self, exclude_model_names)
+            if hasattr(self, 'calculatedvariableselector'):
+                list_to_append = get_objects_for_html(list_to_append, self.calculatedvariableselector, ['main_variable'])
+            if hasattr(self, 'calculatedvariable'):
+                list_to_append = get_objects_for_html(list_to_append, self.calculatedvariable, ['variable_calculated_fields, store_variable'])
+
+        return list_to_append
 
 
 def validate_nonzero(value):
