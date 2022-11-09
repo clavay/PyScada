@@ -1231,14 +1231,11 @@ class Variable(models.Model):
                 return float(self.dictionary.dictionaryitem_set.filter(label=str(value)).first().value)
 
     def _get_objects_for_html(self, list_to_append=None, obj=None, exclude_model_names=None):
-        if obj is not None:
-            list_to_append = get_objects_for_html(list_to_append, obj, exclude_model_names)
-        else:
-            list_to_append = get_objects_for_html(list_to_append, self, exclude_model_names)
-            if hasattr(self, 'calculatedvariableselector'):
-                list_to_append = get_objects_for_html(list_to_append, self.calculatedvariableselector, ['main_variable'])
-            if hasattr(self, 'calculatedvariable'):
-                list_to_append = get_objects_for_html(list_to_append, self.calculatedvariable, ['variable_calculated_fields, store_variable'])
+        list_to_append = get_objects_for_html(list_to_append, self, exclude_model_names)
+        if hasattr(self, 'calculatedvariableselector'):
+            list_to_append = self.calculatedvariableselector._get_objects_for_html(list_to_append, None, ['main_variable'])
+        if hasattr(self, 'calculatedvariable'):
+            list_to_append = get_objects_for_html(list_to_append, self.calculatedvariable, ['variable_calculated_fields', 'store_variable'])
 
         return list_to_append
 
@@ -1384,6 +1381,13 @@ class CalculatedVariableSelector(models.Model):
 
     def __str__(self):
         return self.main_variable.name
+
+    def _get_objects_for_html(self, list_to_append=None, obj=None, exclude_model_names=None):
+        list_to_append = get_objects_for_html(list_to_append, self, exclude_model_names)
+        for calculatedvariable in self.calculatedvariable_set.all():
+            list_to_append = get_objects_for_html(list_to_append, calculatedvariable, ['variable_calculated_fields',])
+
+        return list_to_append
 
 
 class CalculatedVariable(models.Model):

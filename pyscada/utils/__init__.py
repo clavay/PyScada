@@ -23,7 +23,7 @@ def _get_objects_for_html(list_to_append=None, obj=None, exclude_model_names=Non
         list_to_append.update([obj])
     # ForeignKey and OneToOne
     for field in obj._meta.local_fields:
-        if type(field).many_to_one and getattr(obj, field.name) is not None and \
+        if (type(field).many_to_one or type(field).one_to_one) and getattr(obj, field.name) is not None and \
                 field.name not in exclude_model_names:
             if hasattr(field, '_get_objects_for_html'):
                 list_to_append.update(field._get_objects_for_html(list_to_append))
