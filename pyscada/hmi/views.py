@@ -487,8 +487,8 @@ def get_cache_data(request):
     if timestamp_to == 0:
         timestamp_to = time.time()
 
-    if timestamp_to - timestamp_from > 120 * 60 and not init:
-        timestamp_from = timestamp_to - 120 * 60
+    #if timestamp_to - timestamp_from > 120 * 60 and not init:
+    #    timestamp_from = timestamp_to - 120 * 60
 
     #if not init:
         #timestamp_to = min(timestamp_from + 30, timestamp_to)
