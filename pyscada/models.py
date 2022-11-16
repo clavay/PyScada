@@ -24,6 +24,7 @@ from monthdelta import monthdelta
 from os import kill, waitpid, WNOHANG
 from struct import *
 from os import getpid
+from dateutil import relativedelta
 import errno
 import numpy as np
 import logging
@@ -1400,14 +1401,14 @@ class CalculatedVariable(models.Model):
     def __str__(self):
         return self.store_variable.name
 
-    def check_to_now(self):
+    def check_to_now(self, force_write=False, add_partial_info=False):
         if self.last_check is not None:
-            self.check_period(self.last_check, now())
+            self.check_period(self.last_check, now(), force_write, add_partial_info)
         else:
-            self.check_period(self.period.start_from, now())
+            self.check_period(self.period.start_from, now(), force_write, add_partial_info)
 
-    def check_period(self, d1, d2):
-        #logger.debug("Check period of %s [%s - %s]" % (self.store_variable, d1, d2))
+    def check_period(self, d1, d2, force_write=False, add_partial_info=False):
+        logger.debug("Check period of %s [%s - %s]" % (self.store_variable, d1, d2))
         self.state = "Checking [%s to %s]" % (d1, d2)
         self.state = self.state[0:100]
         self.save(update_fields=['state'])
@@ -1419,7 +1420,7 @@ class CalculatedVariable(models.Model):
         output = []
 
         if self.period_diff_quantity(d1, d2) is None:
-            #logger.debug("No period in date interval : %s (%s %s)" % (self.period, d1, d2))
+            logger.debug("No period in date interval : %s (%s %s)" % (self.period, d1, d2))
             self.state = "[%s to %s] < %s" % (d1, d2, str(self.period.period_factor) +
                                               self.period.period_choices[self.period.period][1])
             self.state = self.state[0:100]
@@ -1455,7 +1456,7 @@ class CalculatedVariable(models.Model):
                                                                          add_latest_value=False)
             except AttributeError:
                 v_stored = []
-            if len(v_stored) and len(v_stored[self.store_variable.id][0]):
+            if not force_write and len(v_stored) and len(v_stored[self.store_variable.id][0]):
                 logger.debug("Value already exist in RecordedData for %s - %s" %(d1, d1 + td))
                 pass
             else:
@@ -1468,16 +1469,28 @@ class CalculatedVariable(models.Model):
             d1 = d1 + td
 
         if len(output):
-            #logger.debug(output)
+            self.last_check = output[-1].date_saved  # + td
+        else:
+            logger.debug("Nothing to add")
+            self.last_check = min(d1, d2, now())
+
+        # Add partial last value when then is data but the period is not elapsed
+        # do not use this data in last check to recalculate it again till the period is elapsed
+        calc_value = self.get_value(d2 - td, d2)
+        td2 = (d2 - td).timestamp()
+        if add_partial_info and calc_value is not None and self.store_variable.update_value(calc_value, td2):
+            item = self.store_variable.create_recorded_data_element()
+            item.date_saved = d2-td
+            if item is not None:
+                output.append(item)
+
+        # Save recorded data elements to DB
+        if len(output):
             m = "Adding : "
             for c in output:
                 m += str(c) + " " + str(c.date_saved) + " - "
             logger.debug(m)
-            RecordedData.objects.bulk_create(output, batch_size=100)
-            self.last_check = output[-1].date_saved + td
-        else:
-            logger.debug("Nothing to add")
-            self.last_check = min(d1 + td, d2, now())
+            RecordedData.objects.bulk_create(output, batch_size=100, ignore_conflicts=True)
 
         self.state = "Checked [%s to %s]" % (d1, d2)
         self.state = self.state[0:100]
@@ -1623,7 +1636,7 @@ class CalculatedVariable(models.Model):
             logger.debug("d_end - d_start < period_factor*period")
             return None
 
-        td=self.add_timedelta()
+        td = self.add_timedelta()
 
         d_start = d_start / self.period.period_factor
         if d_start != int(d_start):
@@ -1694,20 +1707,13 @@ class CalculatedVariable(models.Model):
             return None
 
     def years_diff_quantity(self, d1, d2):
-        #logger.debug("Years:" + str((d1.year - d2.year)))
-        return d2.year - d1.year
+        return relativedelta.relativedelta(d2, d1).years
 
     def months_diff_quantity(self, d1, d2):
-        #logger.debug("Months:" + str((d2.year - d1.year) * 12 + d2.month - d1.month))
-        return (d2.year - d1.year) * 12 + d2.month - d1.month
+        return relativedelta.relativedelta(d2, d1).months + self.years_diff_quantity(d1, d2) * 12
 
     def weeks_diff_quantity(self, d1, d2):
-        monday1 = (d1 - datetime.timedelta(days=d1.weekday()))
-        monday2 = (d2 - datetime.timedelta(days=d2.weekday()))
-        diff = monday2 - monday1
-        noWeeks = (diff.days / 7.0)  + diff.seconds/86400
-        #logger.debug('Weeks:' + str(noWeeks))
-        return noWeeks
+        return self.days_diff_quantity(d1, d2) / 7
 
     def days_diff_quantity(self, d1, d2):
         diff = (d2 - d1).total_seconds() / 60 / 60 / 24
