@@ -759,7 +759,7 @@ class Process(object):
                     logger.debug('PID %d, LABEL %s, process SIGUSR1 (%d) signal' % (self.pid, self.label, sig))
                     if not self.restart():
                         logger.debug("restart failed")
-                        #raise StopIteration
+                        raise StopIteration
                 elif sig == signal.SIGUSR2:
                     # todo handle restart
                     pass
@@ -961,6 +961,10 @@ class SingleDeviceDAQProcessWorker(Process):
                     self.processes.remove(process)
                     logger.debug("Device %s not found for process %s. Process removed." % (process['device_id'], process['id']))
                     continue
+                if Device.objects.filter(pk=process['device_id'], active=1).count() < 1:
+                    self.processes.remove(process)
+                    logger.debug("Device %s not active. Process removed." % process['device_id'])
+                    continue
                 if BackgroundProcess.objects.filter(pk=process['id']).count() != 1:
                     # Process is dead, spawn new instance
                     if process['failed'] < 3:
@@ -1140,9 +1144,14 @@ class SingleDeviceDAQProcess(Process):
         """
         init a standard daq process for a single device
         """
-        self.device = Device.objects.filter(protocol__daq_daemon=1, active=1, id=self.device_id).first()
+        self.device = Device.objects.filter(protocol__daq_daemon=1, id=self.device_id).first()
         if not self.device:
-            logger.error("Error init_process for %s" % self.device_id)
+            logger.error("Cannot initialized process for %s. Device not found." % self.device_id)
+            self.device = None
+            return False
+        if not self.device.active:
+            logger.info("Device %s is not active. Process not initialized." % self.device_id)
+            self.device = None
             return False
         self.dt_set = min(self.dt_set, self.device.polling_interval)
         self.dt_query_data = self.device.polling_interval
@@ -1150,8 +1159,10 @@ class SingleDeviceDAQProcess(Process):
             self.device = self.device.get_device_instance()
         except:
             var = traceback.format_exc()
-            logger.error("exception while initialisation of DAQ Process for Device %d %s %s" % (
+            logger.error("Exception while initialisation of DAQ Process for Device %d %s %s" % (
                 self.device_id, linesep, var))
+            self.device = None
+            return False
 
         return True
 
@@ -1177,21 +1188,22 @@ class SingleDeviceDAQProcess(Process):
         for task in dwts:
             if task.variable.scaling is not None:
                 task.value = task.variable.scaling.scale_output_value(task.value)
-            tmp_data = self.device.write_data(task.variable.id, task.value, task)
-            if isinstance(tmp_data, list):
-                if len(tmp_data) > 0:
-                    task.done = True
-                    task.finished = time()
-                    task.save(update_fields=['done', 'finished'])
-                    data.append(tmp_data)
+            if self.device is not None:
+                tmp_data = self.device.write_data(task.variable.id, task.value, task)
+                if isinstance(tmp_data, list):
+                    if len(tmp_data) > 0:
+                        task.done = True
+                        task.finished = time()
+                        task.save(update_fields=['done', 'finished'])
+                        data.append(tmp_data)
+                    else:
+                        task.failed = True
+                        task.finished = time()
+                        task.save(update_fields=['failed', 'finished'])
                 else:
                     task.failed = True
                     task.finished = time()
                     task.save(update_fields=['failed', 'finished'])
-            else:
-                task.failed = True
-                task.finished = time()
-                task.save(update_fields=['failed', 'finished'])
 
         drts = DeviceReadTask.objects.filter(Q(done=False, start__lte=time(), failed=False,) &
                                              (Q(device_id=self.device_id) | Q(variable__device_id=self.device_id) |
@@ -1257,8 +1269,15 @@ class MultiDeviceDAQProcess(Process):
         self.devices = {}
         # Reset dt_query_data to allow an increasing change of the polling interval from the admin
         self.dt_query_data = 3600.0
-        for item in Device.objects.filter(protocol__daq_daemon=1, active=1, id__in=self.device_ids):
+        for item in Device.objects.filter(protocol__daq_daemon=1, id__in=self.device_ids):
             try:
+                if not item:
+                    logger.error("Cannot add device %s to process %s. Device not found."
+                                 % (self.device_id, self.process_id))
+                    continue
+                if not item.active:
+                    logger.info("Device %s is not active. Not added to process %s." % (self.device_id, self.process_id))
+                    continue
                 tmp_device = item.get_device_instance()
                 if tmp_device is not None:
                     self.devices[item.pk] = tmp_device
@@ -1266,7 +1285,7 @@ class MultiDeviceDAQProcess(Process):
                     self.dt_query_data = min(self.dt_query_data, item.polling_interval)
             except:
                 var = traceback.format_exc()
-                logger.error("exception while initialisation of DAQ Process for Device %d %s %s" % (
+                logger.error("Exception while initialisation of DAQ Process for Device %d %s %s" % (
                     item.pk, linesep, var))
         if len(self.devices.items()) == 0:
             return False
