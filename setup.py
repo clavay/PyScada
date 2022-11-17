@@ -39,6 +39,7 @@ setup(
         'pillow',
         'python-daemon>=2.0.0',
         'pytz',
+        'python-dateutil',
         'pyserial',
         'pyvisa-py>=0.5.2',
         'pyvisa',
