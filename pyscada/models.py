@@ -354,7 +354,7 @@ class RecordedDataValueManager(models.Manager):
             f_time_scale = 1
 
         values = dict()
-        first_value = dict()
+        times = dict()
         date_saved_max = 0
         tmp_time_max = 0
         tmp_time_min = time_max
@@ -379,30 +379,28 @@ class RecordedDataValueManager(models.Manager):
                 continue
             if not item[0] in values:
                 values[item[0]] = []
+                times[item[0]] = {'time_min': time_max, 'time_max': 0}
             tmp_time = float(item[1] - item[0]) / (2097152.0 * 1000)  # calc the timestamp in seconds
             date_saved_max = max(date_saved_max, time.mktime(item[7].utctimetuple()) + item[7].microsecond / 1e6)
             tmp_time_max = max(tmp_time, tmp_time_max)
-            if tmp_time < time_min:
-                first_value[item[0]] = dict()
-                first_value[item[0]]["value"] = get_rd_value(item)
-                first_value[item[0]]["time"] = tmp_time
-                continue
             tmp_time_min = min(tmp_time, tmp_time_min)
             values[item[0]].append([tmp_time * f_time_scale, get_rd_value(item)])
+            if tmp_time < times[item[0]]['time_min']:
+                times[item[0]]['time_min'] = tmp_time
+            if tmp_time > times[item[0]]['time_max']:
+                times[item[0]]['time_max'] = tmp_time
 
         if query_first_value:
             for pk in variable_ids:
                 if pk not in values:
                     values[pk] = []
-                if pk in first_value:
-                    values[pk].insert(0, [first_value[pk]["time"]*f_time_scale, first_value[pk]["value"]])
-                else:
-                    last_element = self.last_element(use_date_saved=True, time_min=0, variable_id=pk)
+                if pk in times:
+                    last_element = self.last_element(use_date_saved=True, time_min=0,
+                                                     time_max=times[pk]['time_min'], variable_id=pk)
                     if last_element is not None:
-                        values[pk].append([(float(last_element.pk - last_element.variable_id) / (2097152.0 * 1000)) * f_time_scale,
-                                           last_element.value()])
-                if len(values[pk]) > 1:
-                    values[pk].append([values[pk][-1][0], values[pk][-1][1]])
+                        values[pk].insert(0, [(float(last_element.pk - last_element.variable_id) / (2097152.0 * 1000))
+                                              * f_time_scale, last_element.value()])
+
         values['timestamp'] = max(tmp_time_max, time_min) * f_time_scale
         values['date_saved_max'] = date_saved_max * f_time_scale
 
