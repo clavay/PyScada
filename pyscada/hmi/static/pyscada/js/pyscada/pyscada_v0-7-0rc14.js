@@ -890,7 +890,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
   */
  function data_handler(){
      if(AUTO_UPDATE_ACTIVE || !INIT_STATUS_VARIABLES_DONE || !INIT_CHART_VARIABLES_DONE){
-         if(DATA_TO_TIMESTAMP==0){
+         if(DATA_TO_TIMESTAMP==0 && FETCH_DATA_PENDING<=0){
          // fetch the SERVER_TIME
              data_handler_ajax(0,[],[],Date.now());
          }else{
@@ -964,12 +964,8 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                              //var timestamp = SERVER_TIME;
                              timestamp = DATA_TO_TIMESTAMP;
                          }
-                         if (timestamp == SERVER_TIME){
-                             timestamp = 0;
-                         }
-                         //data_handler_ajax(1,vars,props,timestamp-120*60*1000,timestamp);
                          request_duration = timestamp - DATA_FROM_TIMESTAMP
-                         // Fetch 10 000 points by var
+                         // Fetch 1 000 points by var
                          point_quantity_to_fetch_by_var = 1000;
                          if (var_count_poll > 0) {
                            duration_for_quantity = point_quantity_to_fetch_by_var * device_pulling_interval_sum / var_count_poll;
@@ -1272,6 +1268,109 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
  //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+ function get_period_fields(key) {
+    calculatedvariableselectorID = Number(get_config_from_hidden_config('calculatedvariableselector','main-variable',key,'id'));
+    if (typeof(calculatedvariableselectorID) == 'undefined' || isNaN(calculatedvariableselectorID)) {return key;};
+    periodFields = get_config_from_hidden_config('calculatedvariableselector','id',calculatedvariableselectorID,'period-fields').split(',');
+    if (periodFields.length > 1) {periodFields.pop();};  // remove last empty item
+    return periodFields;
+ }
+
+ function filter_period_fields_by_type(perdioFields, type) {
+    validPeriodFields = [];
+    for (field in periodFields) {
+        if (get_config_from_hidden_config('periodicfield','id',periodFields[field],'type') == type) {
+            validPeriodFields.push(periodFields[field])
+        }
+    }
+    return validPeriodFields;
+ }
+
+ aggregation_types = [(0, 'min'),
+                    (1, 'max'),
+                    (2, 'total'),
+                    (3, 'difference'),
+                    (4, 'difference percent'),
+                    (5, 'delta'),
+                    (6, 'mean'),
+                    (7, 'first'),
+                    (8, 'last'),
+                    (9, 'count'),
+                    (10, 'count value'),
+                    (11, 'range'),
+                    (12, 'step'),
+                    (13, 'change count'),
+                    (14, 'distinct count'),]
+
+ function filter_aggregation_type_for_period_list(period_list) {
+    result = []
+    for (p in period_list) {
+         i = get_config_from_hidden_config('periodicfield','id',period_list[p],'type')
+         if (typeof(i) !== 'undefined') {
+             result[i] = aggregation_types[i]
+         }
+    }
+    return result
+ }
+
+ function get_one_field_by_period_field(validPeriodFields) {
+    /*
+    period_choices = ((0, 'second'),
+                      (1, 'minute'),
+                      (2, 'hour'),
+                      (3, 'day'),
+                      (4, 'week'),
+                      (5, 'month'),
+                      (6, 'year'),
+                      )
+    */
+    // Store a field by period choice. Prefer the lowest period factor and if equals, the the lowest starting point.
+    periodCalcVar = {0:null,1:null,2:null,3:null,4:null,5:null,6:null,}
+    for (validPeriodField in validPeriodFields) {
+        period = get_config_from_hidden_config('periodicfield','id',validPeriodFields[validPeriodField],'period');
+        if (periodCalcVar[period] == null) {
+            periodCalcVar[period] = validPeriodFields[validPeriodField];
+        }else {
+            newPeriodFactor = get_config_from_hidden_config('periodicfield','id',validPeriodFields[validPeriodField],'period-factor');
+            newStartFrom = get_config_from_hidden_config('periodicfield','id',validPeriodFields[validPeriodField],'period-factor');
+            currentPeriodFactor = get_config_from_hidden_config('periodicfield','id',periodCalcVar[period],'period-factor');
+            currentStartFrom = get_config_from_hidden_config('periodicfield','id',periodCalcVar[period],'period-factor');
+            if (currentPeriodFactor > newPeriodFactor) {
+                periodCalcVar[period] = validPeriodFields[validPeriodField];
+            }else if (currentPeriodFactor = newPeriodFactor && currentStartFrom > newStartFrom) {
+                periodCalcVar[period] = validPeriodFields[validPeriodField];
+            }
+        }
+    }
+    return periodCalcVar;
+ }
+
+ function get_variable_keys_for_period_calculated_variables(periodCalcVar) {
+    keyCalcVar = {0:null,1:null,2:null,3:null,4:null,5:null,6:null,}
+    for (p in periodCalcVar) {
+        if (periodCalcVar[p] !== null) {
+            periods = get_config_from_hidden_configs('calculatedvariable','id','period');
+            for (idP in periods) {
+                if (periodCalcVar[p] == periods[idP] && get_config_from_hidden_config('calculatedvariable','id',idP,'variable-calculated-fields') == calculatedvariableselectorID) {
+                    keyCalcVar[p] = get_config_from_hidden_config('calculatedvariable','id',idP,'store-variable');
+                }
+            }
+        }
+    }
+    return keyCalcVar;
+ }
+
+ function get_one_variable_key_of_calculated_variable_for_duration(start, stop, min_aggregate, keyCalcVar) {
+    if (keyCalcVar[6] !== null && (stop - start) > (60 * 60 * 24 * 365 * min_aggregate)) {return keyCalcVar[6]}
+    else if (keyCalcVar[5] !== null && (stop - start) > (60 * 60 * 24 * 31 * min_aggregate)) {return keyCalcVar[5]}
+    else if (keyCalcVar[4] !== null && (stop - start) > (60 * 60 * 24 * 7 * min_aggregate)) {return keyCalcVar[4]}
+    else if (keyCalcVar[3] !== null && (stop - start) > (60 * 60 * 24 * min_aggregate)) {return keyCalcVar[3]}
+    else if (keyCalcVar[2] !== null && (stop - start) > (60 * 60 * min_aggregate)) {return keyCalcVar[2]}
+    else if (keyCalcVar[1] !== null && (stop - start) > (60 * min_aggregate)) {return keyCalcVar[1]}
+    else if (keyCalcVar[0] !== null && (stop - start) > min_aggregate) {return keyCalcVar[0]}
+    return null;
+ }
+
  /*
   * Get data from an agragated variable if it exist
   * If stop - start > 1 year, get value by month if exist, or by week or by day ...
@@ -1294,84 +1393,30 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                     (13, 'change count'),
                     (14, 'distinct count'),
  */
- function get_aggregated_data(key, start, stop, type=6) {
-    if (!Number.isInteger(key) || Number.isNaN(start) || Number.isNaN(stop) || !Number.isInteger(type)) {console.log("get_aggregated_data : a param is not a int, number, number, int : ", key, start, stop, type);return null;};
+ function get_aggregated_data(key, start, stop, type=6, min_aggregate=3) {
+    if (!Number.isInteger(key) || Number.isNaN(start) || Number.isNaN(stop) || !Number.isInteger(type) || !Number.isInteger(min_aggregate)) {console.log("get_aggregated_data : a param is not a int, number, number, int : ", key, start, stop, type);return key;};
     key = Number(key);
     start = Number(start);
     stop = Number(stop);
     type = Number(type);
-    periodCalcVar = {0:null,1:null,2:null,3:null,4:null,5:null,6:null,}
-    keyCalcVar = {0:null,1:null,2:null,3:null,4:null,5:null,6:null,}
-    if (!key in DATA) {console.log(key, "not in DATA");return;};
-    if (start < 0 || stop < 0) {console.log("start or stop in < 0 :", start, stop);return;};
-    if (start >= stop) {console.log("start is not < stop :", start, stop);return;};
+    min_aggregate = parseInt(min_aggregate);
+    if (min_aggregate <= 0) {console.log("min_aggregate should be > 0, it is ", min_aggregate);return key;};
+    if (!key in DATA) {console.log(key, "not in DATA");return key;};
+    //if (start < 0 || stop < 0) {console.log("start or stop < 0 :", start, stop);};
+    if (start < 0) {start = DATA_FROM_TIMESTAMP;};
+    if (stop < 0) {stop = DATA_TO_TIMESTAMP;};
+    start = start / 1000;
+    stop = stop / 1000;
+    if (start >= stop) {console.log("start is not < stop :", start, stop);return key;};
     if (type < 0 || type > 14) {console.log("type is not 0 between and 14 included :", type)};
-    calculatedvariableselectorID = Number(get_config_from_hidden_config('calculatedvariableselector','main-variable',key,'id'));
-    console.log(calculatedvariableselectorID);
-    if (typeof(calculatedvariableselectorID) == 'undefined') {console.log("variable", key, "has no CaculatedVariableSelector");return;};
-    periodFields = get_config_from_hidden_config('calculatedvariableselector','id',calculatedvariableselectorID,'period-fields').split(',');
-    if (periodFields.length > 1) {periodFields.pop();};  // remove last empty item
-    console.log(periodFields);
-    validPeriodFields = [];
-    for (field in periodFields) {
-    console.log(field);
-    console.log(get_config_from_hidden_config('periodicfield','id',periodFields[field],'type'));
-        if (get_config_from_hidden_config('periodicfield','id',periodFields[field],'type') == type) {
-            validPeriodFields.push(periodFields[field])
-        }
-    }
-    console.log(validPeriodFields);
-    /*
-    period_choices = ((0, 'second'),
-                      (1, 'minute'),
-                      (2, 'hour'),
-                      (3, 'day'),
-                      (4, 'week'),
-                      (5, 'month'),
-                      (6, 'year'),
-                      )
-    */
-    // Store a field by period choice. Prefer the lowest period factor and if equals, the the lowest starting point.
-    for (validPeriodField in validPeriodFields) {
-    console.log(validPeriodFields[validPeriodField]);
-        period = get_config_from_hidden_config('periodicfield','id',validPeriodFields[validPeriodField],'period');
-        if (periodCalcVar[period] == null) {
-            periodCalcVar[period] = validPeriodFields[validPeriodField];
-        }else {
-            newPeriodFactor = get_config_from_hidden_config('periodicfield','id',validPeriodFields[validPeriodField],'period-factor');
-            newStartFrom = get_config_from_hidden_config('periodicfield','id',validPeriodFields[validPeriodField],'period-factor');
-            currentPeriodFactor = get_config_from_hidden_config('periodicfield','id',periodCalcVar[period],'period-factor');
-            currentStartFrom = get_config_from_hidden_config('periodicfield','id',periodCalcVar[period],'period-factor');
-            if (currentPeriodFactor > newPeriodFactor) {
-                periodCalcVar[period] = validPeriodFields[validPeriodField];
-            }else if (currentPeriodFactor = newPeriodFactor && currentStartFrom > newStartFrom) {
-                periodCalcVar[period] = validPeriodFields[validPeriodField];
-            }
-        }
-    }
-    console.log(periodCalcVar);
-    for (p in periodCalcVar) {
-    console.log(periodCalcVar[p]);
-        if (periodCalcVar[p] !== null) {
-            periods = get_config_from_hidden_configs('calculatedvariable','id','period');
-            console.log(periods);
-            for (idP in periods) {
-                if (periodCalcVar[p] == periods[idP] && get_config_from_hidden_config('calculatedvariable','id',idP,'variable-calculated-fields') == calculatedvariableselectorID) {
-                    console.log('key found :', get_config_from_hidden_config('calculatedvariable','id',idP,'store-variable'));
-                    keyCalcVar[p] = get_config_from_hidden_config('calculatedvariable','id',idP,'store-variable');
-                }
-            }
-        }
-    }
-    console.log(keyCalcVar);
-    if (keyCalcVar[6] !== null && (stop - start) > (60 * 60 * 24 * 365 * 2)) {return keyCalcVar[6]}
-    else if (keyCalcVar[5] !== null && (stop - start) > (60 * 60 * 24 * 31 * 2)) {return keyCalcVar[5]}
-    else if (keyCalcVar[4] !== null && (stop - start) > (60 * 60 * 24 * 7 * 2)) {return keyCalcVar[4]}
-    else if (keyCalcVar[3] !== null && (stop - start) > (60 * 60 * 24 * 2)) {return keyCalcVar[3]}
-    else if (keyCalcVar[2] !== null && (stop - start) > (60 * 60 * 2)) {return keyCalcVar[2]}
-    else if (keyCalcVar[1] !== null && (stop - start) > (60 * 2)) {return keyCalcVar[1]}
-    else if (keyCalcVar[0] !== null && (stop - start) > 2) {return keyCalcVar[0]}
-    return keyCalcVar;
+
+    periodFields = get_period_fields(key);
+    validPeriodFields = filter_period_fields_by_type(periodFields, type);
+    periodCalcVar = get_one_field_by_period_field(validPeriodFields);
+    keyCalcVar = get_variable_keys_for_period_calculated_variables(periodCalcVar);
+    new_key = get_one_variable_key_of_calculated_variable_for_duration(start, stop, min_aggregate, keyCalcVar);
+    if (new_key !== null) {return new_key;}
+    return key;
  }
 
  // COLOR OBJECT :
@@ -1906,10 +1951,21 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
              jk=1;
              // for each variable
              for (var key in keys){
-                 key = keys[key];
+                 original_key = keys[key];
+                 aggregatedtType = parseInt(document.querySelector('#chart-legend-table-23-48 .aggregation-option[data-id="' + original_key + '"]').value);
+                 if (! isNaN(aggregatedtType)) {
+                     key = Number(get_aggregated_data(keys[key], DATA_DISPLAY_FROM_TIMESTAMP, DATA_DISPLAY_TO_TIMESTAMP, aggregatedtType));
+                 }else {
+                    key = original_key;
+                 }
+                 if (!variables.hasOwnProperty(key) && original_key in variables) {
+                     variables[key] = variables[original_key]
+                 }
+
+                 //key = keys[key];
                  xkey = xaxisVarId;
                  // if the variable checkbox is check, update data
-                 if($(legend_checkbox_id+key).is(':checked') && typeof(DATA[key]) === 'object'){
+                 if($(legend_checkbox_id+original_key).is(':checked') && typeof(DATA[key]) === 'object'){
                      if (DATA_DISPLAY_TO_TIMESTAMP > 0 && DATA_DISPLAY_FROM_TIMESTAMP > 0){
                          start_id = find_index_sub_gte(DATA[key],DATA_DISPLAY_FROM_TIMESTAMP,0);
                          stop_id = find_index_sub_lte(DATA[key],DATA_DISPLAY_TO_TIMESTAMP,0);
@@ -1925,6 +1981,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                          stop_id = find_index_sub_lte(DATA[key],DATA_TO_TIMESTAMP,0);
                      }
                      if (typeof(start_id) == "undefined") {
+                        console.log('start_id for var id ', key, 'is undefined');
                          continue;
                      }else {
                          chart_data = DATA[key].slice(start_id,stop_id+1);
@@ -2859,6 +2916,21 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
  }
 
 
+function setAggregatedLists() {
+    c=document.querySelectorAll('.aggregation-option');
+    for (cc in c) {
+      if (typeof(c[cc]) == 'object') {
+        kkk = c[cc].getAttribute('data-id');
+        a=get_period_fields(kkk)
+        b=filter_aggregation_type_for_period_list(a)
+        for (v in b) {
+          c[cc].add(new Option(b[v], v));
+        }
+        c[cc].onchange = function(){updatePyScadaPlots(true);};
+      }
+    }
+}
+
 
  //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2897,7 +2969,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
   * @returns void
   */
  function progressbarSetWindow( event, ui ) {
-     updatePyScadaPlots(false);
+     updatePyScadaPlots(true);
 
      progressbar_resize_active = false;
  }
@@ -3922,6 +3994,12 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
          }
      });
 
+     // Add calculated aggregated variable to CHART_VARIABLE_KEYS
+     $.each($('.calculatedvariable-config2'),function(key,val){
+         id = parseInt($(val).data('store-variable'));
+         CHART_VARIABLE_KEYS[id] = 0;
+     });
+
      set_loading_state(1, loading_states[1] + 10);
 
 
@@ -4033,4 +4111,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
      document.querySelectorAll('.refresh-rate-output').forEach(item => {item.innerHTML= document.querySelector('.refresh-rate-input').value});
      document.querySelectorAll('.refresh-rate-li').forEach(item => {item.classList.remove('hidden')});
      document.querySelectorAll('.refresh-rate-divider').forEach(item => {item.classList.remove('hidden')});
+
+     // Fill aggregated lists
+     setAggregatedLists();
  });
