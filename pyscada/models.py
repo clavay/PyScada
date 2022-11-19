@@ -590,7 +590,10 @@ class Device(models.Model):
 
     def __str__(self):
         # display protocol for the JS filter for inline variables (hmi.static.pyscada.js.admin)
-        return self.protocol.protocol + "-" + self.short_name
+        if self.protocol is not None:
+            return self.protocol.protocol + "-" + self.short_name
+        else:
+            return 'generic-' + self.short_name
 
     def get_device_instance(self):
         try:
