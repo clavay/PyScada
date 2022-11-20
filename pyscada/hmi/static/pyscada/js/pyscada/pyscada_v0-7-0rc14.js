@@ -1952,7 +1952,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
              // for each variable
              for (var key in keys){
                  original_key = keys[key];
-                 aggregatedtType = document.querySelector('#chart-legend-table-23-48 .aggregation-option[data-id="' + original_key + '"]');
+                 aggregatedtType = document.querySelector(legend_table_id + ' .aggregation-option[data-id="' + original_key + '"]');
                  if (aggregatedtType !== null && ! isNaN(parseInt(aggregatedtType.value))) {
                      key = Number(get_aggregated_data(keys[key], DATA_DISPLAY_FROM_TIMESTAMP, DATA_DISPLAY_TO_TIMESTAMP, parseInt(aggregatedtType.value)));
                  }else {
