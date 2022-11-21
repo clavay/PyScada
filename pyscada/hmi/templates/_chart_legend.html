@@ -17,7 +17,7 @@
               {{ var.hmi_name }}
           </td>
           <td >
-              <select class="aggregation-option" id="{{ var.hmi_name }}-aggregation-select" data-id="{{ var.id }}" style="width:66px;">
+              <select class="aggregation-option" id="aggregation-select-{{widget_pk}}-{{chart.pk}}-{{ var.pk }}" data-id="{{ var.id }}" data-widget-id="{{widget_pk}}-{{chart.pk}}" style="width:66px;">
                   <option value=null>None</option>
               </select>
           </td>

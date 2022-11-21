@@ -2921,12 +2921,26 @@ function setAggregatedLists() {
     for (cc in c) {
       if (typeof(c[cc]) == 'object') {
         kkk = c[cc].getAttribute('data-id');
-        a=get_period_fields(kkk)
-        b=filter_aggregation_type_for_period_list(a)
+        widget_id = c[cc].getAttribute('data-widget-id');
+        a=get_period_fields(kkk);
+        b=filter_aggregation_type_for_period_list(a);
         for (v in b) {
           c[cc].add(new Option(b[v], v));
+          if (!document.querySelectorAll('#aggregation-all-select-' + widget_id + ' option[value="' + v + '"]').length) {
+            document.querySelector('#aggregation-all-select-' + widget_id).add(new Option(b[v], v));
+          }
         }
         c[cc].onchange = function(){updatePyScadaPlots(true);};
+        document.querySelector('#aggregation-all-select-' + widget_id).onchange = function(){
+            widget_id = this.dataset['widgetId'];
+            c = document.querySelectorAll('.aggregation-option[data-widget-id="' + widget_id + '"]')
+            for (cc in c) {
+                for (o in c[cc].options) {
+                    if (this.value == c[cc][o].value){c[cc].value = this.value;};
+                }
+            }
+            updatePyScadaPlots(true);
+        };
       }
     }
 }
