@@ -6,7 +6,8 @@
                 <tr>
                     <th style="width:14px;">&nbsp;</th>
                     <th style="width:14px;" class="sorter-false">&nbsp;</th>
-                    <th  class="{sorter: 'text'}">&nbsp;</th>
+                    <th class="{sorter: 'text'}">&nbsp;</th>
+                    <th style="width:66px;" class="{sorter: 'text'}">&nbsp;</th>
                     <th style="width:45px; text-align:right" class="{sorter: 'digit'}">&nbsp;</th>
                     <th style="width:35px;" class="{sorter: 'text'}">&nbsp;</th>
                 </tr>
@@ -16,6 +17,11 @@
                     </td>
                     <td></td>
                     <td>Mark All/None</td>
+                    <td>Aggregation<br>
+                        <select class="aggregation-all-option" id="aggregation-all-select-{{widget_pk}}-{{chart.pk}}" data-id="{{ var.id }}" data-widget-id="{{widget_pk}}-{{chart.pk}}" style="width:66px;">
+                            <option value=null>None</option>
+                        </select>
+                    </td>
                     <td></td>
                     <td></td>
                 </tr>

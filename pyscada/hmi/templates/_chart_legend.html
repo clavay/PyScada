@@ -16,6 +16,11 @@
           <td class="legendLabel" data-key="{{var.pk}}" style="word-wrap: break-word">
               {{ var.hmi_name }}
           </td>
+          <td >
+              <select class="aggregation-option" id="aggregation-select-{{widget_pk}}-{{chart.pk}}-{{ var.pk }}" data-id="{{ var.id }}" data-widget-id="{{widget_pk}}-{{chart.pk}}" style="width:66px;">
+                  <option value=null>None</option>
+              </select>
+          </td>
           <td class="legendValue type-numeric chart-legend-value-{{widget_pk}}-{{chart.pk}} var-{{ var.pk }}" id="chart-legend-value-{{widget_pk}}-{{chart.pk}}-{{var.pk}}" style="text-align:right"></td>
           <td class="legendUnit" data-key="{{var.pk}}">{{ var.unit.unit }}</td>
       </tr>

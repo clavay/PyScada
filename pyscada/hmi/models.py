@@ -2,11 +2,15 @@
 from __future__ import unicode_literals
 
 from pyscada.models import Device, Variable, VariableProperty, Color
+from pyscada.utils import _get_objects_for_html as get_objects_for_html
 
+from django.template.exceptions import TemplateDoesNotExist, TemplateSyntaxError
 from django.db import models
 from django.contrib.auth.models import Group
 from django.template.loader import get_template
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from six import text_type
 import traceback
@@ -47,6 +51,18 @@ def _create_widget_content(sender, instance, created=False, **kwargs):
     return
 
 
+def validate_tempalte(value):
+    try:
+        get_template(value + '.html').render()
+    except TemplateDoesNotExist:
+        logger.warning("Template filename not found.")
+        raise ValidationError(
+            _("Template filename not found."),
+        )
+    except TemplateSyntaxError:
+        pass
+
+
 class WidgetContentModel(models.Model):
 
     @classmethod
@@ -63,36 +79,9 @@ class WidgetContentModel(models.Model):
         return '', '', ''
 
     def _get_objects_for_html(self, list_to_append=None, obj=None, exclude_model_names=None):
-        if exclude_model_names is None:
-            exclude_model_names = list()
-        if list_to_append is None:
-            list_to_append = set()
         if obj is None:
             obj = self
-
-        if obj not in list_to_append:
-            list_to_append.update([obj])
-
-        # ForeignKey and OneToOne
-        for field in obj._meta.local_fields:
-            if type(field).many_to_one and getattr(obj, field.name) is not None and \
-                    field.name not in exclude_model_names:
-                if hasattr(field, '_get_objects_for_html'):
-                    list_to_append.update(field._get_objects_for_html(list_to_append))
-                else:
-                    list_to_append.update(self._get_objects_for_html(list_to_append, getattr(obj, field.name)))
-        #ManyToMany
-        for fields in obj._meta.local_many_to_many:
-            #logger.debug(fields)
-            for field in getattr(obj, fields.name).all():
-                #logger.debug(field)
-                if field not in exclude_model_names:
-                    if hasattr(field, '_get_objects_for_html'):
-                        list_to_append.update(field._get_objects_for_html(list_to_append))
-                    else:
-                        list_to_append.update(self._get_objects_for_html(list_to_append, field))
-
-        return list_to_append
+        return get_objects_for_html(list_to_append=list_to_append, obj=obj, exclude_model_names=exclude_model_names)
 
     def create_widget_content_entry(self):
         def fullname(o):
@@ -124,11 +113,24 @@ class WidgetContentModel(models.Model):
 
 class Theme(models.Model):
     name = models.CharField(max_length=400)
-    base_filename = models.CharField(max_length=400, default='base', help_text="Enter the filename without '.html'")
-    view_filename = models.CharField(max_length=400, default='view', help_text="Enter the filename without '.html'")
+    base_filename = models.CharField(max_length=400, default='base', help_text="Enter the filename without '.html'",
+                                     validators=[validate_tempalte])
+    view_filename = models.CharField(max_length=400, default='view', help_text="Enter the filename without '.html'",
+                                     validators=[validate_tempalte])
 
     def __str__(self):
         return self.name
+
+    def check_all_themes(self):
+        # Delete theme with missing template file
+        for theme in Theme.objects.all():
+            try:
+                get_template(theme.view_filename + '.html').render()
+                get_template(theme.base_filename + '.html').render()
+            except TemplateDoesNotExist:
+                theme.delete()
+            except TemplateSyntaxError:
+                pass
 
 
 class ControlElementOption(models.Model):
@@ -506,9 +508,11 @@ class ControlPanel(WidgetContentModel):
         """
         widget_pk = kwargs['widget_pk'] if 'widget_pk' in kwargs else 0
         visible_element_list = kwargs['visible_control_element_list'] if 'visible_control_element_list' in kwargs else []
+        visible_form_list = kwargs['visible_form_list'] if 'visible_form_list' in kwargs else []
         main_template = get_template('control_panel.html')
         main_content = main_template.render(dict(control_panel=self,
                                                  visible_control_element_list=visible_element_list,
+                                                 visible_form_list=visible_form_list,
                                                  uuid=uuid4().hex, widget_pk=widget_pk))
         sidebar_content = None
         opts = dict()
@@ -716,16 +720,118 @@ class View(models.Model):
 
 
 class GroupDisplayPermission(models.Model):
-    hmi_group = models.OneToOneField(Group, null=True, on_delete=models.SET_NULL)
-    pages = models.ManyToManyField(Page, blank=True)
-    sliding_panel_menus = models.ManyToManyField(SlidingPanelMenu, blank=True)
-    charts = models.ManyToManyField(Chart, blank=True)
-    control_items = models.ManyToManyField(ControlItem, blank=True)
-    forms = models.ManyToManyField(Form, blank=True)
-    widgets = models.ManyToManyField(Widget, blank=True)
-    custom_html_panels = models.ManyToManyField(CustomHTMLPanel, blank=True)
-    views = models.ManyToManyField(View, blank=True)
-    process_flow_diagram = models.ManyToManyField(ProcessFlowDiagram, blank=True)
+    hmi_group = models.OneToOneField(Group, null=True, on_delete=models.CASCADE)
+    type_choices = ((0, 'allow'), (1, 'exclude'),)
 
     def __str__(self):
         return self.hmi_group.name
+
+
+class PieGroupDisplayPermission(models.Model):
+    group_display_permission = models.OneToOneField(GroupDisplayPermission, null=True, on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField(default=0, choices=GroupDisplayPermission.type_choices,
+                                            help_text='If allow: only selected items can be seen by the group.'
+                                                      '<br>If exclude: allows all items except the selected ones.')
+    pies = models.ManyToManyField(Pie, blank=True, related_name='groupdisplaypermission')
+
+    def __str__(self):
+        return self.group_display_permission.hmi_group.name
+
+
+class PageGroupDisplayPermission(models.Model):
+    group_display_permission = models.OneToOneField(GroupDisplayPermission, null=True, on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField(default=0, choices=GroupDisplayPermission.type_choices,
+                                            help_text='If allow: only selected items can be seen by the group.'
+                                                      '<br>If exclude: allows all items except the selected ones.')
+    pages = models.ManyToManyField(Page, blank=True, related_name='groupdisplaypermission')
+
+    #def __str__(self):
+    #    return self.group_display_permission.hmi_group.name
+
+
+class SlidingPanelMenuGroupDisplayPermission(models.Model):
+    group_display_permission = models.OneToOneField(GroupDisplayPermission, null=True, on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField(default=0, choices=GroupDisplayPermission.type_choices,
+                                            help_text='If allow: only selected items can be seen by the group.'
+                                                      '<br>If exclude: allows all items except the selected ones.')
+    sliding_panel_menus = models.ManyToManyField(SlidingPanelMenu, blank=True, related_name='groupdisplaypermission')
+
+    def __str__(self):
+        return self.group_display_permission.hmi_group.name
+
+
+class ChartGroupDisplayPermission(models.Model):
+    group_display_permission = models.OneToOneField(GroupDisplayPermission, null=True, on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField(default=0, choices=GroupDisplayPermission.type_choices,
+                                            help_text='If allow: only selected items can be seen by the group.'
+                                                      '<br>If exclude: allows all items except the selected ones.')
+    charts = models.ManyToManyField(Chart, blank=True, related_name='groupdisplaypermission')
+
+    def __str__(self):
+        return self.group_display_permission.hmi_group.name
+
+
+class ControlItemGroupDisplayPermission(models.Model):
+    group_display_permission = models.OneToOneField(GroupDisplayPermission, null=True, on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField(default=0, choices=GroupDisplayPermission.type_choices,
+                                            help_text='If allow: only selected items can be seen by the group.'
+                                                      '<br>If exclude: allows all items except the selected ones.')
+    control_items = models.ManyToManyField(ControlItem, blank=True, related_name='groupdisplaypermission')
+
+    def __str__(self):
+        return self.group_display_permission.hmi_group.name
+
+
+class FormGroupDisplayPermission(models.Model):
+    group_display_permission = models.OneToOneField(GroupDisplayPermission, null=True, on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField(default=0, choices=GroupDisplayPermission.type_choices,
+                                            help_text='If allow: only selected items can be seen by the group.'
+                                                      '<br>If exclude: allows all items except the selected ones.')
+    forms = models.ManyToManyField(Form, blank=True, related_name='groupdisplaypermission')
+
+    def __str__(self):
+        return self.group_display_permission.hmi_group.name
+
+
+class WidgetGroupDisplayPermission(models.Model):
+    group_display_permission = models.OneToOneField(GroupDisplayPermission, null=True, on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField(default=0, choices=GroupDisplayPermission.type_choices,
+                                            help_text='If allow: only selected items can be seen by the group.'
+                                                      '<br>If exclude: allows all items except the selected ones.')
+    widgets = models.ManyToManyField(Widget, blank=True, related_name='groupdisplaypermission')
+
+    def __str__(self):
+        return self.group_display_permission.hmi_group.name
+
+
+class CustomHTMLPanelGroupDisplayPermission(models.Model):
+    group_display_permission = models.OneToOneField(GroupDisplayPermission, null=True, on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField(default=0, choices=GroupDisplayPermission.type_choices,
+                                            help_text='If allow: only selected items can be seen by the group.'
+                                                      '<br>If exclude: allows all items except the selected ones.')
+    custom_html_panels = models.ManyToManyField(CustomHTMLPanel, blank=True, related_name='groupdisplaypermission')
+
+    def __str__(self):
+        return self.group_display_permission.hmi_group.name
+
+
+class ViewGroupDisplayPermission(models.Model):
+    group_display_permission = models.OneToOneField(GroupDisplayPermission, null=True, on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField(default=0, choices=GroupDisplayPermission.type_choices,
+                                            help_text='If allow: only selected items can be seen by the group.'
+                                                      '<br>If exclude: allows all items except the selected ones.')
+    views = models.ManyToManyField(View, blank=True, related_name='groupdisplaypermission')
+
+    def __str__(self):
+        return self.group_display_permission.hmi_group.name
+
+
+class ProcessFlowDiagramGroupDisplayPermission(models.Model):
+    group_display_permission = models.OneToOneField(GroupDisplayPermission, null=True, on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField(default=0, choices=GroupDisplayPermission.type_choices,
+                                            help_text='If allow: only selected items can be seen by the group.'
+                                                      '<br>If exclude: allows all items except the selected ones.')
+    process_flow_diagram = models.ManyToManyField(ProcessFlowDiagram, blank=True, related_name='groupdisplaypermission')
+
+    def __str__(self):
+        return self.group_display_permission.hmi_group.name
