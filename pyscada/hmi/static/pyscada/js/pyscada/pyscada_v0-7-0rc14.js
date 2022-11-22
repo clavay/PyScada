@@ -977,7 +977,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                            t = t_start;
                          }
                          FETCH_DATA_PENDING++;
-                         store_temp_ajax_data = [1,vars,props,t_start,t,timestamp,duration_for_quantity]
+                         store_temp_ajax_data = [1,vars,props,t_start,t,timestamp,duration_for_quantity,timestamp]
                          //data_handler_ajax(1,vars,props,DATA_FROM_TIMESTAMP,timestamp);
                      }else{
                          INIT_CHART_VARIABLES_DONE = true;
@@ -994,13 +994,14 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                t = store_temp_ajax_data[4]
                timestamp = store_temp_ajax_data[5]
                duration_for_quantity = store_temp_ajax_data[6]
-               set_loading_state(5, (loading_states[5] || 0) + 100*(vars.length/CHART_VARIABLE_KEYS.count())*((timestamp-t)/(timestamp-t_start)));
+               tmax = store_temp_ajax_data[7]
+               set_loading_state(5, (loading_states[5] || 0) + 100*(vars.length/CHART_VARIABLE_KEYS.count())*((timestamp-t)/(tmax-t_start)));
                //data_handler_ajax(1,vars,props,t_start,t);
                data_handler_ajax(1,vars,props,t,timestamp);
                if (t_start < t) {
                  timestamp = t;
                  t = Math.max(t - duration_for_quantity * 1000, t_start);
-                 store_temp_ajax_data = [1,vars,props,t_start,t,timestamp,duration_for_quantity];
+                 store_temp_ajax_data = [1,vars,props,t_start,t,timestamp,duration_for_quantity,tmax];
                }else {
                  FETCH_DATA_PENDING--;
                  store_temp_ajax_data = null;
