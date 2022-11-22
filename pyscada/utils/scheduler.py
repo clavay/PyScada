@@ -641,8 +641,8 @@ class Scheduler(object):
             process_list.append(process)
             process_list += list(process.backgroundprocess_set.filter())
         for process in process_list:
-            logger.debug('%s, parrent process_id %d' % (self.label, process.parent_process.pk))
-            logger.debug('%s, process_id %d' % (self.label, self.process_id))
+            logger.debug('%s, parrent process_id %d' % (self.label, process.parent_process.pid))
+            logger.debug('%s, process_id %d' % (process.label, process.pid))
 
     def signal(self, signum=None, frame=None):
         """
