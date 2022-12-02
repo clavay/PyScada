@@ -967,14 +967,15 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                          request_duration = timestamp - DATA_FROM_TIMESTAMP
                          // Fetch 1 000 points by var
                          point_quantity_to_fetch_by_var = 1000;
+                         t_start = DATA_FROM_TIMESTAMP;
                          if (var_count_poll > 0) {
                            duration_for_quantity = point_quantity_to_fetch_by_var * device_pulling_interval_sum / var_count_poll;
                            duration_for_quantity = duration_for_quantity * 10 / var_count  //adjust for less than 10 vars
                            duration_for_quantity = parseInt(duration_for_quantity);
-                           t_start = DATA_FROM_TIMESTAMP;
                            t = Math.max(timestamp - duration_for_quantity * 1000, t_start);
                          }else {
                            t = t_start;
+                           duration_for_quantity = 1;
                          }
                          FETCH_DATA_PENDING++;
                          store_temp_ajax_data = [1,vars,props,t_start,t,timestamp,duration_for_quantity,timestamp]
