@@ -233,9 +233,9 @@ class ControlItem(models.Model):
 
     def web_id(self):
         if self.variable_property:
-            return "controlitem-" + self.id.__str__() + "-" + self.variable_property.name.replace(' ', '_')
+            return "controlitem-" + self.id.__str__() + "-" + self.variable_property.id.__str__()
         elif self.variable:
-            return "controlitem-" + self.id.__str__() + "-" + self.variable.name.replace(' ', '_')
+            return "controlitem-" + self.id.__str__() + "-" + self.variable.id.__str__()
 
     def web_class_str(self):
         if self.variable_property:
