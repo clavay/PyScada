@@ -450,9 +450,12 @@ class VariableAdmin(admin.ModelAdmin):
         qs = super(VariableAdmin, self).get_queryset(request)
         return qs.filter(calculatedvariable__isnull=True)
 
+    def color_code(self, instance):
+        return instance.chart_line_color.color_code()
+
 
 class CoreVariableAdmin(VariableAdmin):
-    list_display = ('id', 'name', 'description', 'unit', 'scaling', 'device', 'value_class', 'active', 'writeable',
+    list_display = ('id', 'name', 'description', 'color_code', 'unit', 'scaling', 'device', 'value_class', 'active', 'writeable',
                     'dictionary',)
     list_editable = ('active', 'writeable', 'unit', 'scaling', 'dictionary',)
     list_display_links = ('name',)
