@@ -448,6 +448,11 @@ class VariableAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         """Limit Pages to those that belong to the request's user."""
         qs = super(VariableAdmin, self).get_queryset(request)
+        # check if popup open from control item : include calculated variable
+        if 'environ' in request.__dict__:
+            for i in request.__dict__['environ']:
+                if isinstance(request.__dict__['environ'][i], str) and '&_popup=1' in request.__dict__['environ'][i]:
+                    return qs
         return qs.filter(calculatedvariable__isnull=True)
 
     def color_code(self, instance):
@@ -455,7 +460,7 @@ class VariableAdmin(admin.ModelAdmin):
 
 
 class CoreVariableAdmin(VariableAdmin):
-    list_display = ('id', 'name', 'description', 'color_code', 'unit', 'scaling', 'device', 'value_class', 'active', 'writeable',
+    list_display = ('id', 'name', 'description', 'unit', 'scaling', 'device', 'value_class', 'active', 'writeable',
                     'dictionary',)
     list_editable = ('active', 'writeable', 'unit', 'scaling', 'dictionary',)
     list_display_links = ('name',)
