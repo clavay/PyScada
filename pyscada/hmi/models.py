@@ -664,6 +664,15 @@ class WidgetContent(models.Model):
         return '%s [%d] %s' % (self.content_model.split('.')[-1], self.content_pk, self.content_str)  # todo add more infos
 
 
+class CssClass(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=400, default='')
+    css_class = models.SlugField(max_length=80, default='')
+
+    def __str__(self):
+        return self.title
+
+
 class Widget(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=400, default='', blank=True)
@@ -678,6 +687,7 @@ class Widget(models.Model):
     size = models.PositiveSmallIntegerField(default=4, choices=size_choices)
     visible = models.BooleanField(default=True)
     content = models.ForeignKey(WidgetContent, null=True, default=None, on_delete=models.SET_NULL)
+    extra_css_class = models.ForeignKey(CssClass, null=True, default=None, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         ordering = ['row', 'col']
