@@ -545,7 +545,7 @@ var store_temp_ajax_data = null;
          if (val == false) { val = 0 ;} else if ( val == true ) { val = 1 ;}
      }
 
-     color = null;
+     var color = null;
 
      // COLOR TYPE :
      switch(color_type){
