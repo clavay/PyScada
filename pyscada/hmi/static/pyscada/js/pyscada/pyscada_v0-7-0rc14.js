@@ -545,7 +545,7 @@ var store_temp_ajax_data = null;
          if (val == false) { val = 0 ;} else if ( val == true ) { val = 1 ;}
      }
 
-     color = null;
+     var color = null;
 
      // COLOR TYPE :
      switch(color_type){
@@ -1954,7 +1954,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
              // for each variable
              for (var key in keys){
                  original_key = keys[key];
-                 aggregatedtType = document.querySelector(legend_table_id + ' .aggregation-option[data-id="' + original_key + '"]');
+                 aggregatedtType = document.querySelector(legend_table_id + ' .aggregation-type-option[data-id="' + original_key + '"]');
                  if (aggregatedtType !== null && ! isNaN(parseInt(aggregatedtType.value))) {
                      key = Number(get_aggregated_data(keys[key], DATA_DISPLAY_FROM_TIMESTAMP, DATA_DISPLAY_TO_TIMESTAMP, parseInt(aggregatedtType.value)));
                  }else {
@@ -2076,7 +2076,7 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
                  }
                  jk += 1;
              }
-             if (new_data_bool || old_series.length == 0 || series.length == 0 || force) {
+             if (new_data_bool || old_series.length == 0 || series.length == 0 || old_series.length != series.length || force) {
 
                //update y window
                pOpt = flotPlot.getOptions();
@@ -2917,34 +2917,65 @@ function get_config_from_hidden_config(type,filter_data,val,get_data){
      return 'rgb(' + gradient.red + ',' + gradient.green + ',' + gradient.blue + ')';
  }
 
-
+ /**
+  *  Fill aggregated type and period for each variable and for all selectors
+  */
 function setAggregatedLists() {
-    c=document.querySelectorAll('.aggregation-option');
+    c=document.querySelectorAll('.aggregation-type-option');
     for (cc in c) {
       if (typeof(c[cc]) == 'object') {
-        kkk = c[cc].getAttribute('data-id');
+        var_id = c[cc].getAttribute('data-id');
         widget_id = c[cc].getAttribute('data-widget-id');
-        a=get_period_fields(kkk);
+        a=get_period_fields(var_id);
         b=filter_aggregation_type_for_period_list(a);
         for (v in b) {
           c[cc].add(new Option(b[v], v));
-          if (!document.querySelectorAll('#aggregation-all-select-' + widget_id + ' option[value="' + v + '"]').length) {
-            document.querySelector('#aggregation-all-select-' + widget_id).add(new Option(b[v], v));
+          if (!document.querySelectorAll('#aggregation-type-all-select-' + widget_id + ' option[value="' + v + '"]').length) {
+            document.querySelector('#aggregation-type-all-select-' + widget_id).add(new Option(b[v], v));
           }
         }
-        c[cc].onchange = function(){updatePyScadaPlots(true);};
-        document.querySelector('#aggregation-all-select-' + widget_id).onchange = function(){
+        c[cc].onchange = function(){
+            updatePyScadaPlots(true);
+            setAggregatedPeriodList(widget_id, var_id);
             widget_id = this.dataset['widgetId'];
-            c = document.querySelectorAll('.aggregation-option[data-widget-id="' + widget_id + '"]')
+            var_id = this.dataset['id'];
+            if (this.value == "null") {
+                document.querySelector('#chart-legend-options-span-' + widget_id + '-' + var_id).innerHTML = "";
+            }else {
+                document.querySelector('#chart-legend-options-span-' + widget_id + '-' + var_id).innerHTML = "(" + this.selectedOptions[0].text + ")";
+            }
+        };
+        document.querySelector('#aggregation-type-all-select-' + widget_id).onchange = function(){
+            widget_id = this.dataset['widgetId'];
+            c = document.querySelectorAll('.aggregation-type-option[data-widget-id="' + widget_id + '"]')
             for (cc in c) {
                 for (o in c[cc].options) {
-                    if (this.value == c[cc][o].value){c[cc].value = this.value;};
+                    if (this.value == c[cc][o].value){
+                        c[cc].value = this.value;
+                        var_id = c[cc].dataset['id'];
+                        if (this.value == "null") {
+                            document.querySelector('#chart-legend-options-span-' + widget_id + '-' + var_id).innerHTML = "";
+                        }else {
+                            document.querySelector('#chart-legend-options-span-' + widget_id + '-' + var_id).innerHTML = "(" + this.selectedOptions[0].text + ")";
+                        }
+                    };
                 }
+            }
+            if (this.value == "null") {
+                document.querySelector('#chart-legend-options-span-' + widget_id).innerHTML = "";
+            }else {
+                document.querySelector('#chart-legend-options-span-' + widget_id).innerHTML = "(" + this.selectedOptions[0].text + ")";
             }
             updatePyScadaPlots(true);
         };
       }
     }
+}
+
+function setAggregatedPeriodList(widget_id, var_id) {
+    a=get_period_fields(var_id);
+    b=filter_period_fields_by_type(a, );
+    document.querySelector("li-aggregation-all-period-select-" + widget_id + "-" + var_id);
 }
 
 

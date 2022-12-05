@@ -47,6 +47,7 @@ setup(
         # 'channels-redis',
         'asgiref',
         'monthdelta',
+        'six',
     ],
     packages=find_packages(exclude=["project", "project.*"]),
     include_package_data=True,
