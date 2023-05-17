@@ -1,0 +1,326 @@
+
+questions_setup
+
+date :
+mer. 17 mai 2023 12:13:15 CEST
+Is the date and time correct ? [y/n]: regex_proxy
+Use proxy? [http://proxy:port or n]: regex_proxy end
+Install channels and redis ? [y/n]: Update only don't create db, user, copy services, settings and urls...) ? [y/n]: 
+questions_clean_install_setup
+
+DB name ? [PyScada_db]: DB user ? [PyScada-user]: DB password ? [PyScada-user-password]: 
+admin_name_setup
+
+admin name ? 
+admin_name_setup end
+
+
+regex_mail
+
+admin mail ? 
+regex_mail end
+
+('admin', 'admin@mail.com' )
+
+web interface admin name [pyscada]: web interface admin password [password]: Auto add pyscada plugins ? [True/False]: You need to restart pyscada and gunicorn after (un)installing any pyscada plugin.
+
+questions_clean_install_setup end
+
+
+questions_setup end
+
+
+stop_pyscada
+
+asgiref                3.6.0
+channels               4.0.0
+channels-redis         4.1.0
+PyScada                0.8.0
+Stopping PyScada
+PyScada stopped
+
+stop_pyscada end
+
+
+install_dependences
+
+Lecture des listes de paquets…
+Construction de l'arbre des dépendances…
+Lecture des informations d'état…
+python3-pip est déjà la version la plus récente (20.3.4-4+deb11u1).
+Les paquets suivants ont été installés automatiquement et ne sont plus nécessaires :
+  coinor-libcbc3 coinor-libcgl1 coinor-libclp1 coinor-libcoinmp1v5
+  coinor-libcoinutils3v5 coinor-libosi1v5 fonts-beng fonts-beng-extra
+  fonts-deva fonts-deva-extra fonts-gargi fonts-gujr fonts-gujr-extra
+  fonts-guru fonts-guru-extra fonts-hosny-amiri fonts-hosny-thabit
+  fonts-kalapi fonts-lohit-taml-classical fonts-mlym fonts-nakula
+  fonts-opensymbol fonts-sahadeva fonts-samyak-deva fonts-samyak-gujr
+  fonts-samyak-mlym fonts-samyak-taml fonts-sarai fonts-sil-scheherazade
+  fonts-smc fonts-smc-anjalioldlipi fonts-smc-chilanka fonts-smc-dyuthi
+  fonts-smc-gayathri fonts-smc-karumbi fonts-smc-keraleeyam fonts-smc-manjari
+  fonts-smc-meera fonts-smc-rachana fonts-smc-raghumalayalamsans
+  fonts-smc-suruma fonts-smc-uroob fonts-taml fonts-telu fonts-telu-extra
+  fonts-teluguvijayam fonts-yrsa-rasa gsasl-common libabw-0.1-1
+  libboost-filesystem1.74.0 libboost-locale1.74.0 libboost-thread1.74.0
+  libcdr-0.1-1 libclucene-contribs1v5 libclucene-core1v5 libcmis-0.5-5v5
+  libcolamd2 libe-book-0.1-1 libeot0 libepubgen-0.1-1 libetonyek-0.1-1
+  libexttextcat-2.0-0 libexttextcat-data libfreehand-0.1-1 libgpgmepp6
+  libgsasl7 libjuh-java libjurt-java liblangtag-common liblangtag1
+  liblibreoffice-java libmhash2 libmspub-0.1-1 libmwaw-0.3-3 libmythes-1.2-0
+  libntlm0 libnumbertext-1.0-0 libnumbertext-data libodfgen-0.1-1
+  liborcus-0.16-0 liborcus-parser-0.16-0 libpagemaker-0.0-0 libqrcodegencpp1
+  libqxp-0.0-0 libraptor2-0 librasqal3 librdf0 librevenge-0.0-0 libridl-java
+  libstaroffice-0.0-0 libsuitesparseconfig5 libuno-cppu3
+  libuno-cppuhelpergcc3-3 libuno-purpenvhelpergcc3-3 libuno-sal3
+  libuno-salhelpergcc3-3 libunoloader-java libvisio-0.1-1 libwpd-0.10-10
+  libwpg-0.3-3 libwps-0.4-4 libxmlsec1 libxmlsec1-nss libzmf-0.0-0 lp-solve
+  mailutils-common node-normalize.css python3-libvoikko uno-libs-private ure
+Veuillez utiliser « sudo apt autoremove » pour les supprimer.
+0 mis à jour, 0 nouvellement installés, 0 à enlever et 0 non mis à jour.
+Some python3 packages installed:
+Lecture des listes de paquets…
+Construction de l'arbre des dépendances…
+Lecture des informations d'état…
+libatlas-base-dev est déjà la version la plus récente (3.10.3-10).
+libhdf5-103 est déjà la version la plus récente (1.10.6+repack-4+deb11u1).
+libhdf5-dev est déjà la version la plus récente (1.10.6+repack-4+deb11u1).
+libffi-dev est déjà la version la plus récente (3.3-6).
+libjpeg-dev est déjà la version la plus récente (1:2.0.6-4).
+libmariadb-dev est déjà la version la plus récente (1:10.5.19-0+deb11u2).
+mariadb-server est déjà la version la plus récente (1:10.5.19-0+deb11u2).
+nginx est déjà la version la plus récente (1.18.0-6.1+deb11u3).
+libopenjp2-7 est déjà la version la plus récente (2.4.0-3).
+python3-mysqldb est déjà la version la plus récente (1.4.4-2+b3).
+python3-pip est déjà la version la plus récente (20.3.4-4+deb11u1).
+python3-dev est déjà la version la plus récente (3.9.2-3).
+zlib1g-dev est déjà la version la plus récente (1:1.2.11.dfsg-2+deb11u2).
+Les paquets suivants ont été installés automatiquement et ne sont plus nécessaires :
+  coinor-libcbc3 coinor-libcgl1 coinor-libclp1 coinor-libcoinmp1v5
+  coinor-libcoinutils3v5 coinor-libosi1v5 fonts-beng fonts-beng-extra
+  fonts-deva fonts-deva-extra fonts-gargi fonts-gujr fonts-gujr-extra
+  fonts-guru fonts-guru-extra fonts-hosny-amiri fonts-hosny-thabit
+  fonts-kalapi fonts-lohit-taml-classical fonts-mlym fonts-nakula
+  fonts-opensymbol fonts-sahadeva fonts-samyak-deva fonts-samyak-gujr
+  fonts-samyak-mlym fonts-samyak-taml fonts-sarai fonts-sil-scheherazade
+  fonts-smc fonts-smc-anjalioldlipi fonts-smc-chilanka fonts-smc-dyuthi
+  fonts-smc-gayathri fonts-smc-karumbi fonts-smc-keraleeyam fonts-smc-manjari
+  fonts-smc-meera fonts-smc-rachana fonts-smc-raghumalayalamsans
+  fonts-smc-suruma fonts-smc-uroob fonts-taml fonts-telu fonts-telu-extra
+  fonts-teluguvijayam fonts-yrsa-rasa gsasl-common libabw-0.1-1
+  libboost-filesystem1.74.0 libboost-locale1.74.0 libboost-thread1.74.0
+  libcdr-0.1-1 libclucene-contribs1v5 libclucene-core1v5 libcmis-0.5-5v5
+  libcolamd2 libe-book-0.1-1 libeot0 libepubgen-0.1-1 libetonyek-0.1-1
+  libexttextcat-2.0-0 libexttextcat-data libfreehand-0.1-1 libgpgmepp6
+  libgsasl7 libjuh-java libjurt-java liblangtag-common liblangtag1
+  liblibreoffice-java libmhash2 libmspub-0.1-1 libmwaw-0.3-3 libmythes-1.2-0
+  libntlm0 libnumbertext-1.0-0 libnumbertext-data libodfgen-0.1-1
+  liborcus-0.16-0 liborcus-parser-0.16-0 libpagemaker-0.0-0 libqrcodegencpp1
+  libqxp-0.0-0 libraptor2-0 librasqal3 librdf0 librevenge-0.0-0 libridl-java
+  libstaroffice-0.0-0 libsuitesparseconfig5 libuno-cppu3
+  libuno-cppuhelpergcc3-3 libuno-purpenvhelpergcc3-3 libuno-sal3
+  libuno-salhelpergcc3-3 libunoloader-java libvisio-0.1-1 libwpd-0.10-10
+  libwpg-0.3-3 libwps-0.4-4 libxmlsec1 libxmlsec1-nss libzmf-0.0-0 lp-solve
+  mailutils-common node-normalize.css python3-libvoikko uno-libs-private ure
+Veuillez utiliser « sudo apt autoremove » pour les supprimer.
+0 mis à jour, 0 nouvellement installés, 0 à enlever et 0 non mis à jour.
+Requirement already satisfied: cffi in /usr/local/lib/python3.9/dist-packages (1.15.1)
+Collecting cffi
+  Using cached cffi-1.15.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (441 kB)
+  Using cached cffi-1.15.0-cp39-cp39-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (444 kB)
+Requirement already satisfied: Cython in /usr/local/lib/python3.9/dist-packages (0.29.34)
+Collecting Cython
+  Using cached Cython-0.29.34-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl (2.0 MB)
+  Using cached Cython-0.29.33-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl (2.0 MB)
+Requirement already satisfied: docutils in /usr/local/lib/python3.9/dist-packages (0.20)
+Collecting docutils
+  Downloading docutils-0.20.1-py3-none-any.whl (572 kB)
+Requirement already satisfied: gunicorn in /usr/local/lib/python3.9/dist-packages (20.1.0)
+Collecting gunicorn
+  Using cached gunicorn-20.1.0-py3-none-any.whl (79 kB)
+  Using cached gunicorn-20.0.4-py2.py3-none-any.whl (77 kB)
+Requirement already satisfied: lxml in /usr/local/lib/python3.9/dist-packages (4.9.2)
+Collecting lxml
+  Using cached lxml-4.9.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl (7.1 MB)
+  Using cached lxml-4.9.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl (7.0 MB)
+Requirement already satisfied: mysqlclient in /usr/local/lib/python3.9/dist-packages (2.1.1)
+Collecting mysqlclient
+  Using cached mysqlclient-2.1.1-cp39-cp39-linux_x86_64.whl
+  Using cached mysqlclient-2.1.0.tar.gz (87 kB)
+Requirement already satisfied: numpy in /usr/local/lib/python3.9/dist-packages (1.24.3)
+Collecting numpy
+  Using cached numpy-1.24.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (17.3 MB)
+  Using cached numpy-1.24.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (17.3 MB)
+Requirement already satisfied: pycparser in /usr/local/lib/python3.9/dist-packages (from cffi) (2.21)
+Requirement already satisfied: setuptools>=3.0 in /usr/local/lib/python3.9/dist-packages (from gunicorn) (67.7.2)
+Installing collected packages: docutils
+  Attempting uninstall: docutils
+    Found existing installation: docutils 0.20
+    Uninstalling docutils-0.20:
+      Successfully uninstalled docutils-0.20
+Successfully installed docutils-0.20.1
+
+install_dependences end
+
+Processing /home/user/Documents/romain/PyScada
+Requirement already satisfied: django<4.3,>=4.2 in /usr/local/lib/python3.9/dist-packages (from PyScada==0.8.0) (4.2.1)
+Requirement already satisfied: numpy>=1.6.0 in /usr/local/lib/python3.9/dist-packages (from PyScada==0.8.0) (1.24.3)
+Requirement already satisfied: h5py>=2.2.1 in /usr/local/lib/python3.9/dist-packages (from PyScada==0.8.0) (3.8.0)
+Requirement already satisfied: pillow in /usr/local/lib/python3.9/dist-packages (from PyScada==0.8.0) (9.5.0)
+Requirement already satisfied: python-daemon>=2.0.0 in /usr/local/lib/python3.9/dist-packages (from PyScada==0.8.0) (3.0.1)
+Requirement already satisfied: pytz in /usr/local/lib/python3.9/dist-packages (from PyScada==0.8.0) (2023.3)
+Requirement already satisfied: python-dateutil in /usr/local/lib/python3.9/dist-packages (from PyScada==0.8.0) (2.8.2)
+Requirement already satisfied: asgiref in /usr/local/lib/python3.9/dist-packages (from PyScada==0.8.0) (3.6.0)
+Requirement already satisfied: monthdelta in /usr/local/lib/python3.9/dist-packages (from PyScada==0.8.0) (0.9.1)
+Requirement already satisfied: six in /usr/lib/python3/dist-packages (from PyScada==0.8.0) (1.16.0)
+Requirement already satisfied: concurrent-log-handler in /usr/local/lib/python3.9/dist-packages (from PyScada==0.8.0) (0.9.23)
+Requirement already satisfied: sqlparse>=0.3.1 in /usr/local/lib/python3.9/dist-packages (from django<4.3,>=4.2->PyScada==0.8.0) (0.4.4)
+Requirement already satisfied: setuptools>=62.4.0 in /usr/local/lib/python3.9/dist-packages (from python-daemon>=2.0.0->PyScada==0.8.0) (67.7.2)
+Requirement already satisfied: lockfile>=0.10 in /usr/local/lib/python3.9/dist-packages (from python-daemon>=2.0.0->PyScada==0.8.0) (0.12.2)
+Requirement already satisfied: docutils in /usr/local/lib/python3.9/dist-packages (from python-daemon>=2.0.0->PyScada==0.8.0) (0.20.1)
+Requirement already satisfied: portalocker>=1.6.0 in /usr/local/lib/python3.9/dist-packages (from concurrent-log-handler->PyScada==0.8.0) (2.7.0)
+Building wheels for collected packages: PyScada
+  Building wheel for PyScada (setup.py): started
+  Building wheel for PyScada (setup.py): finished with status 'done'
+  Created wheel for PyScada: filename=PyScada-0.8.0-py3-none-any.whl size=2743437 sha256=64e9fafb8477c7ab6dfa90fda14225341fcc105a50a4742c57b7b2b1872a7466
+  Stored in directory: /tmp/pip-ephem-wheel-cache-67ckqscj/wheels/d3/d7/18/9e77d7b63cfe505ec604aaa0b441601414a48d91aef6dad20d
+Successfully built PyScada
+Installing collected packages: PyScada
+  Attempting uninstall: PyScada
+    Found existing installation: PyScada 0.8.0
+    Uninstalling PyScada-0.8.0:
+      Successfully uninstalled PyScada-0.8.0
+Successfully installed PyScada-0.8.0
+
+install_channel_redis
+
+Lecture des listes de paquets…
+Construction de l'arbre des dépendances…
+Lecture des informations d'état…
+redis-server est déjà la version la plus récente (5:6.0.16-1+deb11u2).
+Les paquets suivants ont été installés automatiquement et ne sont plus nécessaires :
+  coinor-libcbc3 coinor-libcgl1 coinor-libclp1 coinor-libcoinmp1v5
+  coinor-libcoinutils3v5 coinor-libosi1v5 fonts-beng fonts-beng-extra
+  fonts-deva fonts-deva-extra fonts-gargi fonts-gujr fonts-gujr-extra
+  fonts-guru fonts-guru-extra fonts-hosny-amiri fonts-hosny-thabit
+  fonts-kalapi fonts-lohit-taml-classical fonts-mlym fonts-nakula
+  fonts-opensymbol fonts-sahadeva fonts-samyak-deva fonts-samyak-gujr
+  fonts-samyak-mlym fonts-samyak-taml fonts-sarai fonts-sil-scheherazade
+  fonts-smc fonts-smc-anjalioldlipi fonts-smc-chilanka fonts-smc-dyuthi
+  fonts-smc-gayathri fonts-smc-karumbi fonts-smc-keraleeyam fonts-smc-manjari
+  fonts-smc-meera fonts-smc-rachana fonts-smc-raghumalayalamsans
+  fonts-smc-suruma fonts-smc-uroob fonts-taml fonts-telu fonts-telu-extra
+  fonts-teluguvijayam fonts-yrsa-rasa gsasl-common libabw-0.1-1
+  libboost-filesystem1.74.0 libboost-locale1.74.0 libboost-thread1.74.0
+  libcdr-0.1-1 libclucene-contribs1v5 libclucene-core1v5 libcmis-0.5-5v5
+  libcolamd2 libe-book-0.1-1 libeot0 libepubgen-0.1-1 libetonyek-0.1-1
+  libexttextcat-2.0-0 libexttextcat-data libfreehand-0.1-1 libgpgmepp6
+  libgsasl7 libjuh-java libjurt-java liblangtag-common liblangtag1
+  liblibreoffice-java libmhash2 libmspub-0.1-1 libmwaw-0.3-3 libmythes-1.2-0
+  libntlm0 libnumbertext-1.0-0 libnumbertext-data libodfgen-0.1-1
+  liborcus-0.16-0 liborcus-parser-0.16-0 libpagemaker-0.0-0 libqrcodegencpp1
+  libqxp-0.0-0 libraptor2-0 librasqal3 librdf0 librevenge-0.0-0 libridl-java
+  libstaroffice-0.0-0 libsuitesparseconfig5 libuno-cppu3
+  libuno-cppuhelpergcc3-3 libuno-purpenvhelpergcc3-3 libuno-sal3
+  libuno-salhelpergcc3-3 libunoloader-java libvisio-0.1-1 libwpd-0.10-10
+  libwpg-0.3-3 libwps-0.4-4 libxmlsec1 libxmlsec1-nss libzmf-0.0-0 lp-solve
+  mailutils-common node-normalize.css python3-libvoikko uno-libs-private ure
+Veuillez utiliser « sudo apt autoremove » pour les supprimer.
+0 mis à jour, 0 nouvellement installés, 0 à enlever et 0 non mis à jour.
+grep: /proc/device-tree/model: Aucun fichier ou dossier de ce type
+Requirement already satisfied: cryptography==3.4.6 in /usr/local/lib/python3.9/dist-packages (3.4.6)
+Collecting cryptography==3.4.6
+  Using cached cryptography-3.4.6-cp36-abi3-manylinux2014_x86_64.whl (3.2 MB)
+Requirement already satisfied: channels in /usr/local/lib/python3.9/dist-packages (4.0.0)
+Collecting channels
+  Using cached channels-4.0.0-py3-none-any.whl (28 kB)
+  Using cached channels-3.0.5-py3-none-any.whl (38 kB)
+Requirement already satisfied: channels-redis in /usr/local/lib/python3.9/dist-packages (4.1.0)
+Collecting channels-redis
+  Using cached channels_redis-4.1.0-py3-none-any.whl (18 kB)
+  Using cached channels_redis-4.0.0-py3-none-any.whl (18 kB)
+Requirement already satisfied: asgiref in /usr/local/lib/python3.9/dist-packages (3.6.0)
+Collecting asgiref
+  Using cached asgiref-3.6.0-py3-none-any.whl (23 kB)
+  Using cached asgiref-3.5.2-py3-none-any.whl (22 kB)
+Requirement already satisfied: cffi>=1.12 in /usr/local/lib/python3.9/dist-packages (from cryptography==3.4.6) (1.15.1)
+Requirement already satisfied: pycparser in /usr/local/lib/python3.9/dist-packages (from cffi>=1.12->cryptography==3.4.6) (2.21)
+Requirement already satisfied: Django>=3.2 in /usr/local/lib/python3.9/dist-packages (from channels) (4.2.1)
+Requirement already satisfied: sqlparse>=0.3.1 in /usr/local/lib/python3.9/dist-packages (from Django>=3.2->channels) (0.4.4)
+Requirement already satisfied: redis>=4.5.3 in /usr/local/lib/python3.9/dist-packages (from channels-redis) (4.5.5)
+Requirement already satisfied: msgpack~=1.0 in /usr/local/lib/python3.9/dist-packages (from channels-redis) (1.0.5)
+Requirement already satisfied: async-timeout>=4.0.2 in /usr/local/lib/python3.9/dist-packages (from redis>=4.5.3->channels-redis) (4.0.2)
+
+install_channel_redis end
+
+
+user_setup
+
+Creating system user pyscada...
+useradd: user 'pyscada' already exists
+mkdir: impossible de créer le répertoire « /var/log/pyscada/ »: Le fichier existe
+L'utilisateur « www-data » appartient déjà au groupe « pyscada ».
+L'utilisateur « pyscada » appartient déjà au groupe « dialout ».
+
+user_setup end
+
+
+db_setup
+
+
+db_setup end
+
+
+template_setup
+
+CommandError: /var/www/pyscada/PyScadaServer/manage.py already exists. Overlaying a project into an existing directory won't replace conflicting files.
+
+template_setup end
+
+
+pyscada_init
+
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, export, hmi, pyscada, sessions
+Running migrations:
+  No migrations to apply.
+
+140 static files copied to '/var/www/pyscada/http/static', 125 unmodified.
+Installed 124 object(s) from 1 fixture(s)
+Installed 16 object(s) from 1 fixture(s)
+app django.contrib.admin
+app django.contrib.auth
+app django.contrib.contenttypes
+app django.contrib.sessions
+app django.contrib.messages
+app django.contrib.staticfiles
+app pyscada
+app pyscada.hmi
+app pyscada.export
+--> add pyscada.export
+app channels
+app pyscada.core
+--> add pyscada.mail
+--> add pyscada.event
+--> add pyscada.generic
+init db completed
+
+web_setup
+
+User pyscada already exist
+Generating a RSA private key
+..................................................................+++++
+...............................................................+++++
+writing new private key to '/etc/nginx/ssl/pyscada_server.key'
+-----
+Synchronizing state of nginx.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install enable nginx
+
+web_setup end
+
+PyScada installed
+Connect to http://127.0.0.1 using :
+username : pyscada
+password : password
+
+pyscada_init end
+

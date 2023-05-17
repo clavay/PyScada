@@ -1,0 +1,983 @@
+active
+The installation may take some time
+
+ssl_setup
+
+SSL directory already exist
+SSL certificates already exist
+
+ssl_setup end
+
+
+questions_setup
+
+
+admin_name_setup
+
+admin name ? 
+admin_name_setup end
+
+
+regex_mail
+
+admin mail ? 
+regex_mail end
+
+('admin', 'admin@mail.com' )
+PyScada_db
+Database name [PyScada_db]: Database user [PyScada-user]: Database password [PyScada-user-password]: Auto add pyscada plugins ? [True/False]: You need to restart pyscada and gunicorn after (un)installing any pyscada plugin.
+
+questions_setup end
+
+
+db_setup
+
+
+db_setup end
+
+
+template_setup
+
+  adding: project_name/ (stored 0%)
+  adding: project_name/__init__.py-tpl (stored 0%)
+  adding: project_name/settings.py-tpl (deflated 65%)
+  adding: project_name/urls.py-tpl (deflated 58%)
+  adding: project_name/wsgi.py-tpl (deflated 35%)
+  adding: manage.py-tpl (deflated 47%)
+  adding: ../ (stored 0%)
+  adding: ../.gitlab-ci.yml (deflated 57%)
+  adding: ../install.sh (deflated 57%)
+  adding: ../MANIFEST.in (deflated 62%)
+  adding: ../CHANGELOG.txt (deflated 62%)
+  adding: ../README.md (deflated 52%)
+  adding: ../README.rst (deflated 53%)
+  adding: ../PyScada.git (deflated 83%)
+  adding: ../setup.py (deflated 49%)
+  adding: ../journal.md (deflated 53%)
+  adding: ../install_docker.sh (deflated 67%)
+  adding: ../move_data.py (deflated 65%)
+  adding: ../install_system.sh (deflated 70%)
+  adding: ../LICENSE (deflated 66%)
+  adding: ../extras/ (stored 0%)
+  adding: ../extras/urls.py (deflated 58%)
+  adding: ../extras/0.7to0.8.sh (deflated 65%)
+  adding: ../extras/pyscada-logrotate (deflated 14%)
+  adding: ../extras/nginx_sample.conf (deflated 62%)
+  adding: ../extras/calculatedVariablesUpdate.py (deflated 61%)
+  adding: ../extras/settings.py (deflated 65%)
+  adding: ../extras/service/ (stored 0%)
+  adding: ../extras/service/systemd/ (stored 0%)
+  adding: ../extras/service/systemd/owfs.service (deflated 38%)
+  adding: ../extras/service/systemd/pyscada_daemon.service (deflated 48%)
+  adding: ../extras/service/systemd/gunicorn.service (deflated 36%)
+  adding: ../extras/service/systemd/gunicorn.socket (deflated 26%)
+  adding: ../extras/service/SysV-init/ (stored 0%)
+  adding: ../extras/service/SysV-init/pyscada_daemon (deflated 53%)
+  adding: ../extras/service/SysV-init/gunicorn_django (deflated 53%)
+  adding: ../extras/service/windows/ (stored 0%)
+  adding: ../extras/service/windows/register_windows_service.py (deflated 64%)
+  adding: ../extras/Grafana-test-dashboard.json (deflated 79%)
+  adding: ../.gitignore (deflated 23%)
+  adding: ../logs_docker.txt
+	zip warning:  file size changed while zipping ../logs_docker.txt
+ (deflated 70%)
+  adding: ../AUTHORS (deflated 38%)
+  adding: ../pyscada/ (stored 0%)
+  adding: ../pyscada/device.py (deflated 75%)
+  adding: ../pyscada/__init__.py (deflated 24%)
+  adding: ../pyscada/generic/ (stored 0%)
+  adding: ../pyscada/generic/device.py (deflated 55%)
+  adding: ../pyscada/generic/__init__.py (deflated 26%)
+  adding: ../pyscada/generic/worker.py (deflated 44%)
+  adding: ../pyscada/generic/devices/ (stored 0%)
+  adding: ../pyscada/generic/devices/__init__.py (deflated 58%)
+  adding: ../pyscada/generic/devices/dummy.py (deflated 45%)
+  adding: ../pyscada/generic/devices/waveform.py (deflated 68%)
+  adding: ../pyscada/management/ (stored 0%)
+  adding: ../pyscada/management/__init__.py (stored 0%)
+  adding: ../pyscada/management/commands/ (stored 0%)
+  adding: ../pyscada/management/commands/__init__.py (stored 0%)
+  adding: ../pyscada/management/commands/pyscada_daemon.py (deflated 60%)
+  adding: ../pyscada/log/ (stored 0%)
+  adding: ../pyscada/log/__init__.py (deflated 70%)
+  adding: ../pyscada/core/ (stored 0%)
+  adding: ../pyscada/core/__init__.py (deflated 67%)
+  adding: ../pyscada/fixtures/ (stored 0%)
+  adding: ../pyscada/fixtures/color.json (deflated 93%)
+  adding: ../pyscada/fixtures/units.json (deflated 82%)
+  adding: ../pyscada/event/ (stored 0%)
+  adding: ../pyscada/event/__init__.py (deflated 4%)
+  adding: ../pyscada/event/worker.py (deflated 50%)
+  adding: ../pyscada/models.py (deflated 84%)
+  adding: ../pyscada/hmi/ (stored 0%)
+  adding: ../pyscada/hmi/urls.py (deflated 68%)
+  adding: ../pyscada/hmi/templatetags/ (stored 0%)
+  adding: ../pyscada/hmi/templatetags/__init__.py (stored 0%)
+  adding: ../pyscada/hmi/templatetags/views_extras.py (deflated 39%)
+  adding: ../pyscada/hmi/__init__.py (deflated 31%)
+  adding: ../pyscada/hmi/models.py (deflated 84%)
+  adding: ../pyscada/hmi/static/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.colorhelpers.js (deflated 69%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.canvaswrapper.js (deflated 75%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.js (deflated 80%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.drawSeries.js (deflated 83%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.crosshair.js (deflated 73%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.navigate.js (deflated 80%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.uiConstants.js (deflated 35%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.legend.js (deflated 80%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.browser.js (deflated 69%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.stack.js (deflated 73%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.threshold.js (deflated 68%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.flatdata.js (deflated 58%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.fillbetween.js (deflated 75%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.pie.js (deflated 77%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.resize.js (deflated 58%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.image.js (deflated 69%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.touch.js (deflated 84%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.errorbars.js (deflated 75%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.axislabels.js (deflated 70%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.saturated.js (deflated 64%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.js (deflated 70%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.categories.js (deflated 68%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.selection.js (deflated 76%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.time.js (deflated 75%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.logaxis.js (deflated 72%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.hover.js (deflated 75%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.composeImages.js (deflated 71%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.touchNavigate.js (deflated 82%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.gauge.js (deflated 84%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/source/jquery.flot.symbol.js (deflated 75%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/lib/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/lib/globalize.js (deflated 72%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/lib/jquery.mousewheel.js (deflated 60%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/lib/globalize.culture.en-US.js (deflated 46%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/lib/jquery.event.drag.js (deflated 65%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/LICENSE.txt (deflated 41%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/jquery.event.drag.LICENSE.txt (deflated 42%)
+  adding: ../pyscada/hmi/static/pyscada/js/flot/jquery.mousewheel.LICENSE.txt (deflated 44%)
+  adding: ../pyscada/hmi/static/pyscada/js/daterangepicker/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/daterangepicker/moment.min.js (deflated 67%)
+  adding: ../pyscada/hmi/static/pyscada/js/daterangepicker/daterangepicker.min.js (deflated 77%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery.flot.axisvalues.js (deflated 75%)
+  adding: ../pyscada/hmi/static/pyscada/js/admin/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/admin/hideshow.js (deflated 72%)
+  adding: ../pyscada/hmi/static/pyscada/js/admin/display_inline_protocols_device.js (deflated 58%)
+  adding: ../pyscada/hmi/static/pyscada/js/admin/display_inline_protocols_variable.js (deflated 56%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery/jquery.tablesorter.min.js (deflated 71%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery/jquery.cookie.js (deflated 57%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery/jquery.min.js (deflated 66%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/jquery-ui.min.js (deflated 73%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/images/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/images/ui-icons_444444_256x240.png (deflated 2%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/images/ui-icons_555555_256x240.png (deflated 2%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/images/ui-icons_ffffff_256x240.png (deflated 2%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/images/ui-icons_cc0000_256x240.png (deflated 6%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/images/ui-icons_777620_256x240.png (deflated 6%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/images/ui-icons_777777_256x240.png (deflated 2%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/jquery-ui.js (deflated 76%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/package.json (deflated 60%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/AUTHORS.txt (deflated 53%)
+  adding: ../pyscada/hmi/static/pyscada/js/jquery-ui/LICENSE.txt (deflated 45%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/scrollspy.js (deflated 69%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/dropdown.js (deflated 68%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/tab.js (deflated 67%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/bootstrap.min.js (deflated 72%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/alert.js (deflated 60%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/carousel.js (deflated 71%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/popover.js (deflated 64%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/affix.js (deflated 70%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/button.js (deflated 64%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/modal.js (deflated 73%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/transition.js (deflated 61%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/collapse.js (deflated 72%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/npm.js (deflated 62%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/tooltip.js (deflated 73%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/bootstrap.js (deflated 79%)
+  adding: ../pyscada/hmi/static/pyscada/js/bootstrap/bootstrap-switch.min.js (deflated 76%)
+  adding: ../pyscada/hmi/static/pyscada/js/dexie/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/dexie/LICENSE.txt (deflated 65%)
+  adding: ../pyscada/hmi/static/pyscada/js/tempusdominus-bootstrap-3.js (deflated 85%)
+  adding: ../pyscada/hmi/static/pyscada/js/tempusdominus-bootstrap-3.min.js (deflated 79%)
+  adding: ../pyscada/hmi/static/pyscada/js/MIT-LICENSE.txt (deflated 42%)
+  adding: ../pyscada/hmi/static/pyscada/js/pyscada/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/js/pyscada/pyscada_v0-7-0rc14.js (deflated 81%)
+  adding: ../pyscada/hmi/static/pyscada/js/moment-with-locales.min.js (deflated 79%)
+  adding: ../pyscada/hmi/static/pyscada/css/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/daterangepicker/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/daterangepicker/daterangepicker.css (deflated 79%)
+  adding: ../pyscada/hmi/static/pyscada/css/tempusdominus-bootstrap-3.min.css (deflated 82%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/images/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/images/ui-icons_444444_256x240.png (deflated 2%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/images/ui-icons_555555_256x240.png (deflated 2%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/images/ui-icons_ffffff_256x240.png (deflated 2%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/images/ui-icons_cc0000_256x240.png (deflated 6%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/images/ui-icons_777620_256x240.png (deflated 6%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/images/ui-icons_777777_256x240.png (deflated 2%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/jquery-ui.css (deflated 77%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/jquery-ui.structure.css (deflated 71%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/jquery-ui.min.css (deflated 76%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/package.json (deflated 60%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/AUTHORS.txt (deflated 53%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/jquery-ui.theme.css (deflated 82%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/LICENSE.txt (deflated 45%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/jquery-ui.structure.min.css (deflated 68%)
+  adding: ../pyscada/hmi/static/pyscada/css/jquery-ui/jquery-ui.theme.min.css (deflated 83%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-Black.ttf (deflated 46%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-ThinItalic.ttf (deflated 45%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-LightItalic.ttf (deflated 44%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/roboto-light-webfont.eot (deflated 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-MediumItalic.ttf (deflated 45%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-Regular.ttf (deflated 47%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-Thin.ttf (deflated 48%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/roboto-regular-webfont.woff2 (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-Light.ttf (deflated 46%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/roboto-regular-webfont.woff (deflated 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-BlackItalic.ttf (deflated 44%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/roboto-light-webfont.woff (deflated 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-BoldItalic.ttf (deflated 44%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/roboto-light-webfont.ttf (deflated 45%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/roboto-regular-webfont.eot (deflated 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/LICENSE.txt (deflated 65%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-Bold.ttf (deflated 46%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/roboto-regular-webfont.ttf (deflated 45%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/roboto-light-webfont.svg (deflated 77%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-Italic.ttf (deflated 44%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/Roboto-Medium.ttf (deflated 46%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/roboto-regular-webfont.svg (deflated 77%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/roboto/roboto-light-webfont.woff2 (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/glyphicons-halflings-regular.woff2 (deflated 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/glyphicons-halflings-regular.ttf (deflated 48%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/glyphicons-halflings-regular.eot (deflated 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/glyphicons-halflings-regular.svg (deflated 75%)
+  adding: ../pyscada/hmi/static/pyscada/css/fonts/glyphicons-halflings-regular.woff (deflated 1%)
+  adding: ../pyscada/hmi/static/pyscada/css/bootstrap/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/bootstrap/bootstrap.min.css (deflated 84%)
+  adding: ../pyscada/hmi/static/pyscada/css/bootstrap/bootstrap.css.map (deflated 81%)
+  adding: ../pyscada/hmi/static/pyscada/css/bootstrap/bootstrap.min.css.map (deflated 82%)
+  adding: ../pyscada/hmi/static/pyscada/css/bootstrap/bootstrap.css (deflated 86%)
+  adding: ../pyscada/hmi/static/pyscada/css/bootstrap/bootstrap-switch.min.css (deflated 79%)
+  adding: ../pyscada/hmi/static/pyscada/css/bootstrap/bootstrap-theme.min.css.map (deflated 89%)
+  adding: ../pyscada/hmi/static/pyscada/css/bootstrap/bootstrap-theme.css.map (deflated 85%)
+  adding: ../pyscada/hmi/static/pyscada/css/bootstrap/bootstrap-theme.css (deflated 89%)
+  adding: ../pyscada/hmi/static/pyscada/css/bootstrap/bootstrap-theme.min.css (deflated 88%)
+  adding: ../pyscada/hmi/static/pyscada/css/pyscada/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/css/pyscada/pyscada-theme.css (deflated 77%)
+  adding: ../pyscada/hmi/static/pyscada/img/ (stored 0%)
+  adding: ../pyscada/hmi/static/pyscada/img/desc.gif (deflated 2%)
+  adding: ../pyscada/hmi/static/pyscada/img/favicon.ico (deflated 70%)
+  adding: ../pyscada/hmi/static/pyscada/img/unsorted.gif (deflated 2%)
+  adding: ../pyscada/hmi/static/pyscada/img/load.gif (deflated 32%)
+  adding: ../pyscada/hmi/static/pyscada/img/admin_logo.jpg (deflated 30%)
+  adding: ../pyscada/hmi/static/pyscada/img/asc.gif (deflated 2%)
+  adding: ../pyscada/hmi/templates/ (stored 0%)
+  adding: ../pyscada/hmi/templates/password_change_done.html (deflated 11%)
+  adding: ../pyscada/hmi/templates/custom_html_panel.html (deflated 73%)
+  adding: ../pyscada/hmi/templates/process_flow_diagram.html (deflated 71%)
+  adding: ../pyscada/hmi/templates/pie.html (deflated 53%)
+  adding: ../pyscada/hmi/templates/chart_legend.html (deflated 74%)
+  adding: ../pyscada/hmi/templates/password_change.html (deflated 65%)
+  adding: ../pyscada/hmi/templates/choose_login.html (deflated 51%)
+  adding: ../pyscada/hmi/templates/control_element.html (deflated 78%)
+  adding: ../pyscada/hmi/templates/view_overview.html (deflated 64%)
+  adding: ../pyscada/hmi/templates/form.html (deflated 66%)
+  adding: ../pyscada/hmi/templates/value_field.html (deflated 72%)
+  adding: ../pyscada/hmi/templates/dropdown.html (deflated 70%)
+  adding: ../pyscada/hmi/templates/control_panel.html (deflated 64%)
+  adding: ../pyscada/hmi/templates/widget_row.html (deflated 64%)
+  adding: ../pyscada/hmi/templates/view.html (deflated 72%)
+  adding: ../pyscada/hmi/templates/status_element.html (deflated 70%)
+  adding: ../pyscada/hmi/templates/_chart_legend.html (deflated 72%)
+  adding: ../pyscada/hmi/templates/content_page.html (deflated 33%)
+  adding: ../pyscada/hmi/templates/modelProperties.html (deflated 19%)
+  adding: ../pyscada/hmi/templates/gauge.html (deflated 51%)
+  adding: ../pyscada/hmi/templates/chart.html (deflated 76%)
+  adding: ../pyscada/hmi/templates/button.html (deflated 73%)
+  adding: ../pyscada/hmi/templates/login.html (deflated 55%)
+  adding: ../pyscada/hmi/templates/user_profile_change.html (deflated 67%)
+  adding: ../pyscada/hmi/templates/base.html (deflated 77%)
+  adding: ../pyscada/hmi/apps.py (deflated 37%)
+  adding: ../pyscada/hmi/signals.py (deflated 34%)
+  adding: ../pyscada/hmi/views.py (deflated 81%)
+  adding: ../pyscada/hmi/migrations/ (stored 0%)
+  adding: ../pyscada/hmi/migrations/0035_auto_20200918_1517.py (deflated 59%)
+  adding: ../pyscada/hmi/migrations/0017_groupdisplaypermission_forms.py (deflated 40%)
+  adding: ../pyscada/hmi/migrations/0047_auto_20201202_1445.py (deflated 47%)
+  adding: ../pyscada/hmi/migrations/__init__.py (stored 0%)
+  adding: ../pyscada/hmi/migrations/0062_auto_20220616_1523.py (deflated 91%)
+  adding: ../pyscada/hmi/migrations/0016_auto_20181004_0831.py (deflated 64%)
+  adding: ../pyscada/hmi/migrations/0067_alter_cssclass_options.py (deflated 38%)
+  adding: ../pyscada/hmi/migrations/0059_alter_view_theme.py (deflated 43%)
+  adding: ../pyscada/hmi/migrations/0053_auto_20211118_1438.py (deflated 64%)
+  adding: ../pyscada/hmi/migrations/0060_chartaxis_show_bars.py (deflated 40%)
+  adding: ../pyscada/hmi/migrations/0051_auto_20201204_0901.py (deflated 78%)
+  adding: ../pyscada/hmi/migrations/0024_auto_20191212_1516.py (deflated 60%)
+  adding: ../pyscada/hmi/migrations/0033_auto_20200918_1439.py (deflated 41%)
+  adding: ../pyscada/hmi/migrations/0006_auto_20160111_1848.py (deflated 56%)
+  adding: ../pyscada/hmi/migrations/0040_dictionary_dictionaryitem.py (deflated 63%)
+  adding: ../pyscada/hmi/migrations/0065_auto_20220620_0854.py (deflated 78%)
+  adding: ../pyscada/hmi/migrations/0041_auto_20201002_0934.py (deflated 61%)
+  adding: ../pyscada/hmi/migrations/0011_auto_20180710_1549.py (deflated 58%)
+  adding: ../pyscada/hmi/migrations/0032_auto_20200918_1408.py (deflated 53%)
+  adding: ../pyscada/hmi/migrations/0010_auto_20180705_1341.py (deflated 52%)
+  adding: ../pyscada/hmi/migrations/0044_auto_20201201_1539.py (deflated 43%)
+  adding: ../pyscada/hmi/migrations/0039_auto_20201002_0928.py (deflated 75%)
+  adding: ../pyscada/hmi/migrations/0003_auto_20151130_1456.py (deflated 59%)
+  adding: ../pyscada/hmi/migrations/0034_auto_20200918_1445.py (deflated 42%)
+  adding: ../pyscada/hmi/migrations/0061_auto_20220610_1459.py (deflated 60%)
+  adding: ../pyscada/hmi/migrations/0068_alter_displayvalueoption_timestamp_conversion.py (deflated 56%)
+  adding: ../pyscada/hmi/migrations/0046_auto_20201201_2109.py (deflated 74%)
+  adding: ../pyscada/hmi/migrations/0052_auto_20201204_0949.py (deflated 60%)
+  adding: ../pyscada/hmi/migrations/0063_move_group_display_permissions.py (deflated 85%)
+  adding: ../pyscada/hmi/migrations/0014_auto_20180912_1340.py (deflated 62%)
+  adding: ../pyscada/hmi/migrations/0058_auto_20220523_1639.py (deflated 57%)
+  adding: ../pyscada/hmi/migrations/0056_auto_20211210_1608.py (deflated 62%)
+  adding: ../pyscada/hmi/migrations/0069_displayvalueoption_color_and_more.py (deflated 68%)
+  adding: ../pyscada/hmi/migrations/0071_remove_displayvalueoption_color_1_and_more.py (deflated 81%)
+  adding: ../pyscada/hmi/migrations/0048_chartaxis_fill.py (deflated 40%)
+  adding: ../pyscada/hmi/migrations/0029_auto_20200916_0720.py (deflated 78%)
+  adding: ../pyscada/hmi/migrations/0020_pie.py (deflated 53%)
+  adding: ../pyscada/hmi/migrations/0007_auto_20160518_0848.py (deflated 72%)
+  adding: ../pyscada/hmi/migrations/0025_widgetcontent_content_str.py (deflated 40%)
+  adding: ../pyscada/hmi/migrations/0042_auto_20201201_1335.py (deflated 53%)
+  adding: ../pyscada/hmi/migrations/0030_auto_20200918_0842.py (deflated 45%)
+  adding: ../pyscada/hmi/migrations/0012_auto_20180912_1302.py (deflated 63%)
+  adding: ../pyscada/hmi/migrations/0036_auto_20200923_0850.py (deflated 69%)
+  adding: ../pyscada/hmi/migrations/0021_auto_20190528_0924.py (deflated 55%)
+  adding: ../pyscada/hmi/migrations/0018_auto_20181205_0937.py (deflated 72%)
+  adding: ../pyscada/hmi/migrations/0037_auto_20200923_0852.py (deflated 59%)
+  adding: ../pyscada/hmi/migrations/0023_dropdownitem_value.py (deflated 40%)
+  adding: ../pyscada/hmi/migrations/0001_initial.py (deflated 86%)
+  adding: ../pyscada/hmi/migrations/0045_auto_20201201_2100.py (deflated 57%)
+  adding: ../pyscada/hmi/migrations/0008_auto_20180620_0716.py (deflated 70%)
+  adding: ../pyscada/hmi/migrations/0031_auto_20200918_1206.py (deflated 66%)
+  adding: ../pyscada/hmi/migrations/0013_widget_update_20180912_1315.py (deflated 78%)
+  adding: ../pyscada/hmi/migrations/0028_auto_20200915_1540.py (deflated 39%)
+  adding: ../pyscada/hmi/migrations/0027_auto_20200915_1407.py (deflated 57%)
+  adding: ../pyscada/hmi/migrations/0054_displayvalueoption_type.py (deflated 40%)
+  adding: ../pyscada/hmi/migrations/0026_auto_20200915_1333.py (deflated 77%)
+  adding: ../pyscada/hmi/migrations/0004_auto_20151130_1502.py (deflated 59%)
+  adding: ../pyscada/hmi/migrations/0022_auto_20191004_0912.py (deflated 79%)
+  adding: ../pyscada/hmi/migrations/0070_move_displayvalueoptions.py (deflated 79%)
+  adding: ../pyscada/hmi/migrations/0066_auto_20221205_1435.py (deflated 52%)
+  adding: ../pyscada/hmi/migrations/0064_auto_20220617_1333.py (deflated 87%)
+  adding: ../pyscada/hmi/migrations/0050_auto_20201203_2101.py (deflated 59%)
+  adding: ../pyscada/hmi/migrations/0038_auto_20200929_1410.py (deflated 51%)
+  adding: ../pyscada/hmi/migrations/0057_auto_20211214_1157.py (deflated 53%)
+  adding: ../pyscada/hmi/migrations/0015_auto_20180913_1608.py (deflated 70%)
+  adding: ../pyscada/hmi/migrations/0002_auto_20151016_1932.py (deflated 72%)
+  adding: ../pyscada/hmi/migrations/0055_auto_20211125_1405.py (deflated 71%)
+  adding: ../pyscada/hmi/migrations/0019_auto_20181205_1058.py (deflated 58%)
+  adding: ../pyscada/hmi/migrations/0049_auto_20201202_2037.py (deflated 57%)
+  adding: ../pyscada/hmi/migrations/0072_alter_groupdisplaypermission_hmi_group.py (deflated 60%)
+  adding: ../pyscada/hmi/migrations/0005_auto_20160111_1822.py (deflated 42%)
+  adding: ../pyscada/hmi/migrations/0009_controlitem_property_name.py (deflated 40%)
+  adding: ../pyscada/hmi/migrations/0043_auto_20201201_1411.py (deflated 68%)
+  adding: ../pyscada/hmi/admin.py (deflated 79%)
+  adding: ../pyscada/mail/ (stored 0%)
+  adding: ../pyscada/mail/__init__.py (deflated 31%)
+  adding: ../pyscada/mail/worker.py (deflated 51%)
+  adding: ../pyscada/export/ (stored 0%)
+  adding: ../pyscada/export/csv_file.py (deflated 64%)
+  adding: ../pyscada/export/__init__.py (deflated 50%)
+  adding: ../pyscada/export/management/ (stored 0%)
+  adding: ../pyscada/export/management/__init__.py (stored 0%)
+  adding: ../pyscada/export/management/commands/ (stored 0%)
+  adding: ../pyscada/export/management/commands/__init__.py (stored 0%)
+  adding: ../pyscada/export/management/commands/PyScadaExportData.py (deflated 64%)
+  adding: ../pyscada/export/worker.py (deflated 78%)
+  adding: ../pyscada/export/export.py (deflated 76%)
+  adding: ../pyscada/export/hdf5_file.py (deflated 75%)
+  adding: ../pyscada/export/models.py (deflated 71%)
+  adding: ../pyscada/export/apps.py (deflated 37%)
+  adding: ../pyscada/export/migrations/ (stored 0%)
+  adding: ../pyscada/export/migrations/0002_auto_20151201_1617.py (deflated 44%)
+  adding: ../pyscada/export/migrations/__init__.py (stored 0%)
+  adding: ../pyscada/export/migrations/0011_exporttask_filename.py (deflated 41%)
+  adding: ../pyscada/export/migrations/0013_auto_20170711_0729.py (deflated 44%)
+  adding: ../pyscada/export/migrations/0003_auto_20160315_1140.py (deflated 40%)
+  adding: ../pyscada/export/migrations/0009_auto_20161128_0948.py (deflated 63%)
+  adding: ../pyscada/export/migrations/0007_auto_20161124_1002.py (deflated 69%)
+  adding: ../pyscada/export/migrations/0008_auto_20161124_1003.py (deflated 55%)
+  adding: ../pyscada/export/migrations/0016_auto_20191004_0912.py (deflated 69%)
+  adding: ../pyscada/export/migrations/0010_auto_20161128_1049.py (deflated 44%)
+  adding: ../pyscada/export/migrations/0001_initial.py (deflated 59%)
+  adding: ../pyscada/export/migrations/0012_exporttask_backgroundprocess.py (deflated 46%)
+  adding: ../pyscada/export/migrations/0015_remove_exporttask_backgroundtask.py (deflated 40%)
+  adding: ../pyscada/export/migrations/0006_auto_20160404_0949.py (deflated 70%)
+  adding: ../pyscada/export/migrations/0005_auto_20160403_1454.py (deflated 66%)
+  adding: ../pyscada/export/migrations/0004_exporttask.py (deflated 62%)
+  adding: ../pyscada/export/migrations/0014_auto_20170711_1326.py (deflated 62%)
+  adding: ../pyscada/export/admin.py (deflated 59%)
+  adding: ../pyscada/utils/ (stored 0%)
+  adding: ../pyscada/utils/__init__.py (deflated 76%)
+  adding: ../pyscada/utils/scheduler.py (deflated 84%)
+  adding: ../pyscada/apps.py (deflated 52%)
+  adding: ../pyscada/signals.py (deflated 86%)
+  adding: ../pyscada/views.py (stored 0%)
+  adding: ../pyscada/migrations/ (stored 0%)
+  adding: ../pyscada/migrations/0033_auto_20161107_2241.py (deflated 44%)
+  adding: ../pyscada/migrations/0078_auto_20201123_1906.py (deflated 82%)
+  adding: ../pyscada/migrations/0056_auto_20190625_1823.py (deflated 63%)
+  adding: ../pyscada/migrations/0007_auto_20151201_1613.py (deflated 47%)
+  adding: ../pyscada/migrations/0013_auto_20160204_0840.py (deflated 59%)
+  adding: ../pyscada/migrations/0029_scaling_limit_input.py (deflated 44%)
+  adding: ../pyscada/migrations/0058_merge_20191206_1328.py (deflated 37%)
+  adding: ../pyscada/migrations/0034_auto_20170213_0855.py (deflated 44%)
+  adding: ../pyscada/migrations/0002_event_hysteresis.py (deflated 45%)
+  adding: ../pyscada/migrations/__init__.py (stored 0%)
+  adding: ../pyscada/migrations/0053_auto_20190307_1423.py (deflated 70%)
+  adding: ../pyscada/migrations/0039_auto_20170711_1326.py (deflated 42%)
+  adding: ../pyscada/migrations/0072_auto_20201006_1408.py (deflated 49%)
+  adding: ../pyscada/migrations/0053_auto_20190207_1526.py (deflated 59%)
+  adding: ../pyscada/migrations/0028_auto_20160630_0831.py (deflated 43%)
+  adding: ../pyscada/migrations/0070_auto_20201006_1327.py (deflated 51%)
+  adding: ../pyscada/migrations/0041_update_protocol_id.py (deflated 72%)
+  adding: ../pyscada/migrations/0051_auto_20181206_1107.py (deflated 69%)
+  adding: ../pyscada/migrations/0010_auto_20160115_0918.py (deflated 57%)
+  adding: ../pyscada/migrations/0043_devicewritetask_property_name.py (deflated 40%)
+  adding: ../pyscada/migrations/0019_datamigration_20160228_1624.py (deflated 49%)
+  adding: ../pyscada/migrations/0092_auto_20211125_1054.py (deflated 45%)
+  adding: ../pyscada/migrations/0087_auto_20211116_1329.py (deflated 62%)
+  adding: ../pyscada/migrations/0099_alter_dictionaryitem_label.py (deflated 40%)
+  adding: ../pyscada/migrations/0062_auto_20201002_0830.py (deflated 45%)
+  adding: ../pyscada/migrations/0042_auto_20180604_1240.py (deflated 52%)
+  adding: ../pyscada/migrations/0011_auto_20160115_0920.py (deflated 47%)
+  adding: ../pyscada/migrations/0037_auto_20170418_0931.py (deflated 61%)
+  adding: ../pyscada/migrations/0102_move_complex_event_variables.py (deflated 69%)
+  adding: ../pyscada/migrations/0024_auto_20160517_1047.py (deflated 41%)
+  adding: ../pyscada/migrations/0077_auto_20201104_1656.py (deflated 60%)
+  adding: ../pyscada/migrations/0009_auto_20160111_1802.py (deflated 51%)
+  adding: ../pyscada/migrations/0094_move_dictionaries.py (deflated 71%)
+  adding: ../pyscada/migrations/0004_unit_udunit.py (deflated 45%)
+  adding: ../pyscada/migrations/0057_auto_20191004_0912.py (deflated 87%)
+  adding: ../pyscada/migrations/0086_auto_20211115_1612.py (deflated 52%)
+  adding: ../pyscada/migrations/0005_merge.py (deflated 37%)
+  adding: ../pyscada/migrations/0081_calculatedvariable_periodfield_variablecalculatedfields.py (deflated 69%)
+  adding: ../pyscada/migrations/0045_auto_20180705_1341.py (deflated 58%)
+  adding: ../pyscada/migrations/0054_auto_20190208_0913.py (deflated 59%)
+  adding: ../pyscada/migrations/0074_complexeventitem_active.py (deflated 40%)
+  adding: ../pyscada/migrations/0021_auto_20160228_1643.py (deflated 57%)
+  adding: ../pyscada/migrations/0025_auto_20160517_1734.py (deflated 62%)
+  adding: ../pyscada/migrations/0097_auto_20220118_1046.py (deflated 61%)
+  adding: ../pyscada/migrations/0040_auto_20170905_0942.py (deflated 59%)
+  adding: ../pyscada/migrations/0026_auto_20160518_0848.py (deflated 79%)
+  adding: ../pyscada/migrations/0064_auto_20201005_1443.py (deflated 77%)
+  adding: ../pyscada/migrations/0050_merge_20181130_1143.py (deflated 35%)
+  adding: ../pyscada/migrations/0075_auto_20201007_1609.py (deflated 68%)
+  adding: ../pyscada/migrations/0071_recordedevent_level.py (deflated 39%)
+  adding: ../pyscada/migrations/0049_auto_20181025_1049.py (deflated 46%)
+  adding: ../pyscada/migrations/0044_auto_20180704_1307.py (deflated 66%)
+  adding: ../pyscada/migrations/0082_auto_20211112_1043.py (deflated 43%)
+  adding: ../pyscada/migrations/0032_auto_20161107_2206.py (deflated 64%)
+  adding: ../pyscada/migrations/0022_auto_20160228_2029.py (deflated 54%)
+  adding: ../pyscada/migrations/0061_devicereadtask.py (deflated 66%)
+  adding: ../pyscada/migrations/0093_auto_20211125_1256.py (deflated 66%)
+  adding: ../pyscada/migrations/0038_auto_20170707_1209.py (deflated 63%)
+  adding: ../pyscada/migrations/0014_auto_20160210_1152.py (deflated 54%)
+  adding: ../pyscada/migrations/0036_auto_20170224_1245.py (deflated 58%)
+  adding: ../pyscada/migrations/0047_recordeddatanew.py (deflated 59%)
+  adding: ../pyscada/migrations/0035_auto_20170224_1215.py (deflated 61%)
+  adding: ../pyscada/migrations/0020_auto_20160228_1641.py (deflated 52%)
+  adding: ../pyscada/migrations/0090_auto_20211117_1239.py (deflated 42%)
+  adding: ../pyscada/migrations/0073_auto_20201007_0858.py (deflated 44%)
+  adding: ../pyscada/migrations/0069_complexeventgroup_current_level.py (deflated 39%)
+  adding: ../pyscada/migrations/0006_auto_20151130_1449.py (deflated 89%)
+  adding: ../pyscada/migrations/0098_alter_device_polling_interval.py (deflated 53%)
+  adding: ../pyscada/migrations/0008_auto_20151201_1614.py (deflated 44%)
+  adding: ../pyscada/migrations/0084_auto_20211115_1503.py (deflated 54%)
+  adding: ../pyscada/migrations/0048_datamigration_20181025_0918.py (deflated 66%)
+  adding: ../pyscada/migrations/0089_calculatedvariable_state.py (deflated 40%)
+  adding: ../pyscada/migrations/0030_device_polling_interval.py (deflated 51%)
+  adding: ../pyscada/migrations/0003_auto_20151026_1826.py (deflated 43%)
+  adding: ../pyscada/migrations/0104_rename_complexeventitem_complexeventinput_and_more.py (deflated 78%)
+  adding: ../pyscada/migrations/0031_delete_variableconfigfileimport.py (deflated 37%)
+  adding: ../pyscada/migrations/0067_auto_20201006_0719.py (deflated 52%)
+  adding: ../pyscada/migrations/0001_initial.py (deflated 88%)
+  adding: ../pyscada/migrations/0055_auto_20190625_1752.py (deflated 54%)
+  adding: ../pyscada/migrations/0100_device_instrument_handler.py (deflated 44%)
+  adding: ../pyscada/migrations/0079_devicehandler.py (deflated 52%)
+  adding: ../pyscada/migrations/0018_auto_20160228_1623.py (deflated 65%)
+  adding: ../pyscada/migrations/0068_auto_20201006_0826.py (deflated 45%)
+  adding: ../pyscada/migrations/0015_auto_20160215_1522.py (deflated 66%)
+  adding: ../pyscada/migrations/0059_auto_20200211_1049.py (deflated 83%)
+  adding: ../pyscada/migrations/0012_auto_20160119_0950.py (deflated 42%)
+  adding: ../pyscada/migrations/0047_variableproperty_unit.py (deflated 41%)
+  adding: ../pyscada/migrations/0083_auto_20211115_0812.py (deflated 50%)
+  adding: ../pyscada/migrations/0052_auto_20181207_1019.py (deflated 72%)
+  adding: ../pyscada/migrations/0066_auto_20201006_0718.py (deflated 61%)
+  adding: ../pyscada/migrations/0054_auto_20190411_0749.py (deflated 82%)
+  adding: ../pyscada/migrations/0096_auto_20211210_0924.py (deflated 53%)
+  adding: ../pyscada/migrations/0105_edit_generic_device_protocol.py (deflated 61%)
+  adding: ../pyscada/migrations/0080_variableproperty_last_modified.py (deflated 40%)
+  adding: ../pyscada/migrations/0063_complexevent_complexeventitem_complexeventitemvariable.py (deflated 78%)
+  adding: ../pyscada/migrations/0103_remove_complexevent_new_value_and_more.py (deflated 59%)
+  adding: ../pyscada/migrations/0046_remove_devicewritetask_property_name.py (deflated 39%)
+  adding: ../pyscada/migrations/0060_auto_20200914_1417.py (deflated 39%)
+  adding: ../pyscada/migrations/0101_complexeventchangevariable.py (deflated 59%)
+  adding: ../pyscada/migrations/0065_auto_20201005_1454.py (deflated 51%)
+  adding: ../pyscada/migrations/0095_auto_20211203_1949.py (deflated 46%)
+  adding: ../pyscada/migrations/0088_auto_20211117_1023.py (deflated 55%)
+  adding: ../pyscada/migrations/0076_mail_html_message.py (deflated 40%)
+  adding: ../pyscada/migrations/0027_auto_20160530_1436.py (deflated 50%)
+  adding: ../pyscada/migrations/0091_auto_20211118_1019.py (deflated 44%)
+  adding: ../pyscada/migrations/0023_auto_20160314_1817.py (deflated 43%)
+  adding: ../pyscada/migrations/0017_recordeddata.py (deflated 60%)
+  adding: ../pyscada/migrations/0016_auto_20160215_2002.py (deflated 43%)
+  adding: ../pyscada/migrations/0085_calculatedvariableselector_active.py (deflated 40%)
+  adding: ../pyscada/admin.py (deflated 82%)
+  adding: ../pyscada/tests.py (deflated 38%)
+
+template_setup end
+
+db uses an image, skipping
+Building pyscada
+Step 1/17 : FROM python:latest
+ ---> 815c8c75dfc0
+Step 2/17 : LABEL maintainer="PyScada | Martin Schröder"
+ ---> Running in 50b1dc3db4b7
+Removing intermediate container 50b1dc3db4b7
+ ---> 54ed9d8a0d17
+Step 3/17 : ENV DEBIAN_FRONTEND noninteractive
+ ---> Running in 07d1bc42659d
+Removing intermediate container 07d1bc42659d
+ ---> 0586bc1752eb
+Step 4/17 : ENV LANG C.UTF-8
+ ---> Running in 303fc3847bc1
+Removing intermediate container 303fc3847bc1
+ ---> cc14195a41af
+Step 5/17 : COPY project_template.zip /src/pyscada/
+ ---> 36b4acf92029
+Step 6/17 : COPY pyscada.zip /src/pyscada/
+ ---> b5d0028eed70
+Step 7/17 : COPY pyscada /src/pyscada/
+ ---> f68a9ba04fac
+Step 8/17 : COPY pyscada_init /src/pyscada/
+ ---> 9921d7bed19b
+Step 9/17 : RUN touch /src/pyscada/pyscada_debug.log
+ ---> Running in e3f15b2411a8
+Removing intermediate container e3f15b2411a8
+ ---> 364d9a660a11
+Step 10/17 : WORKDIR /src/pyscada
+ ---> Running in 4eb93597c6e6
+Removing intermediate container 4eb93597c6e6
+ ---> e32065ede6b7
+Step 11/17 : RUN pip3 install gunicorn
+ ---> Running in 633a2fa6c58a
+Collecting gunicorn
+  Downloading gunicorn-20.1.0-py3-none-any.whl (79 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.5/79.5 kB 360.6 kB/s eta 0:00:00
+Requirement already satisfied: setuptools>=3.0 in /usr/local/lib/python3.11/site-packages (from gunicorn) (65.5.1)
+Installing collected packages: gunicorn
+Successfully installed gunicorn-20.1.0
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0m[91m
+[notice] A new release of pip available: 22.3.1 -> 23.1.2
+[notice] To update, run: pip install --upgrade pip
+[0mRemoving intermediate container 633a2fa6c58a
+ ---> c2c3077e5046
+Step 12/17 : RUN pip3 install mysqlclient
+ ---> Running in ebeab35558a1
+Collecting mysqlclient
+  Downloading mysqlclient-2.1.1.tar.gz (88 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 88.1/88.1 kB 335.7 kB/s eta 0:00:00
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Building wheels for collected packages: mysqlclient
+  Building wheel for mysqlclient (setup.py): started
+  Building wheel for mysqlclient (setup.py): finished with status 'done'
+  Created wheel for mysqlclient: filename=mysqlclient-2.1.1-cp311-cp311-linux_x86_64.whl size=114692 sha256=01c7abeacf14c0ae8e09d9a9aa83255982453dad9caae723c2e7f27ab0f1be9b
+  Stored in directory: /root/.cache/pip/wheels/79/b2/17/a308360433f77818b9ddfd53121edb8148c0430b10c5012c83
+Successfully built mysqlclient
+Installing collected packages: mysqlclient
+Successfully installed mysqlclient-2.1.1
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0m[91m
+[notice] A new release of pip available: 22.3.1 -> 23.1.2
+[notice] To update, run: pip install --upgrade pip
+[0mRemoving intermediate container ebeab35558a1
+ ---> f54eebeb53af
+Step 13/17 : RUN pip3 install /src/pyscada/pyscada.zip
+ ---> Running in 6c70a0558bde
+Processing ./pyscada.zip
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting django<4.3,>=4.2
+  Downloading Django-4.2.1-py3-none-any.whl (8.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 268.5 kB/s eta 0:00:00
+Collecting numpy>=1.6.0
+  Downloading numpy-1.24.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (17.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.3/17.3 MB 310.9 kB/s eta 0:00:00
+Collecting h5py>=2.2.1
+  Downloading h5py-3.8.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 269.2 kB/s eta 0:00:00
+Collecting pillow
+  Downloading Pillow-9.5.0-cp311-cp311-manylinux_2_28_x86_64.whl (3.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 318.7 kB/s eta 0:00:00
+Collecting python-daemon>=2.0.0
+  Downloading python_daemon-3.0.1-py3-none-any.whl (31 kB)
+Collecting pytz
+  Downloading pytz-2023.3-py2.py3-none-any.whl (502 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 502.3/502.3 kB 355.8 kB/s eta 0:00:00
+Collecting python-dateutil
+  Downloading python_dateutil-2.8.2-py2.py3-none-any.whl (247 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 247.7/247.7 kB 353.2 kB/s eta 0:00:00
+Collecting asgiref
+  Downloading asgiref-3.6.0-py3-none-any.whl (23 kB)
+Collecting monthdelta
+  Downloading MonthDelta-0.9.1.zip (3.0 kB)
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting six
+  Downloading six-1.16.0-py2.py3-none-any.whl (11 kB)
+Collecting concurrent-log-handler
+  Downloading concurrent_log_handler-0.9.24-py3-none-any.whl (24 kB)
+Collecting sqlparse>=0.3.1
+  Downloading sqlparse-0.4.4-py3-none-any.whl (41 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 41.2/41.2 kB 494.6 kB/s eta 0:00:00
+Collecting docutils
+  Downloading docutils-0.20.1-py3-none-any.whl (572 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 572.7/572.7 kB 329.7 kB/s eta 0:00:00
+Collecting lockfile>=0.10
+  Downloading lockfile-0.12.2-py2.py3-none-any.whl (13 kB)
+Requirement already satisfied: setuptools>=62.4.0 in /usr/local/lib/python3.11/site-packages (from python-daemon>=2.0.0->PyScada==0.8.0) (65.5.1)
+Collecting portalocker>=1.6.0
+  Downloading portalocker-2.7.0-py2.py3-none-any.whl (15 kB)
+Building wheels for collected packages: PyScada, monthdelta
+  Building wheel for PyScada (setup.py): started
+  Building wheel for PyScada (setup.py): finished with status 'done'
+  Created wheel for PyScada: filename=PyScada-0.8.0-py3-none-any.whl size=2743438 sha256=d2f8a377a22c977797fff61d9e985029bc74320775a93ae2c808d5f1b55bc050
+  Stored in directory: /tmp/pip-ephem-wheel-cache-f_79wo4d/wheels/91/e7/b4/bda1066c285f8a70a093e5d1228b3a38814d632c630e3def94
+  Building wheel for monthdelta (setup.py): started
+  Building wheel for monthdelta (setup.py): finished with status 'done'
+  Created wheel for monthdelta: filename=MonthDelta-0.9.1-py3-none-any.whl size=3087 sha256=c61f67579accc9a7c3de13f6541d981e499cb78d30cca99eece24f71d2083e3c
+  Stored in directory: /root/.cache/pip/wheels/74/b6/8a/f4241d172b853a258f5996aab740003690fc54fd8556e12a72
+Successfully built PyScada monthdelta
+Installing collected packages: pytz, monthdelta, lockfile, sqlparse, six, portalocker, pillow, numpy, docutils, asgiref, python-dateutil, python-daemon, h5py, django, concurrent-log-handler, PyScada
+Successfully installed PyScada-0.8.0 asgiref-3.6.0 concurrent-log-handler-0.9.24 django-4.2.1 docutils-0.20.1 h5py-3.8.0 lockfile-0.12.2 monthdelta-0.9.1 numpy-1.24.3 pillow-9.5.0 portalocker-2.7.0 python-daemon-3.0.1 python-dateutil-2.8.2 pytz-2023.3 six-1.16.0 sqlparse-0.4.4
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0m[91m
+[notice] A new release of pip available: 22.3.1 -> 23.1.2
+[notice] To update, run: pip install --upgrade pip
+[0mRemoving intermediate container 6c70a0558bde
+ ---> 4cbbaa2de785
+Step 14/17 : RUN django-admin startproject PyScadaServer /src/pyscada/ --template /src/pyscada/project_template.zip
+ ---> Running in 7800e8eb26fd
+Removing intermediate container 7800e8eb26fd
+ ---> 889527c5be7b
+Step 15/17 : RUN chmod +x /src/pyscada/pyscada
+ ---> Running in e87f69b3633f
+Removing intermediate container e87f69b3633f
+ ---> 216283720168
+Step 16/17 : RUN chmod +x /src/pyscada/pyscada_init
+ ---> Running in 129aca6cea27
+Removing intermediate container 129aca6cea27
+ ---> 5f145cf6edce
+Step 17/17 : CMD ["/src/pyscada/pyscada"]
+ ---> Running in 66aeac06809b
+Removing intermediate container 66aeac06809b
+ ---> 476eaf2d7515
+Successfully built 476eaf2d7515
+Successfully tagged docker_pyscada:latest
+Building nginx
+Step 1/8 : FROM nginx:latest
+latest: Pulling from library/nginx
+Digest: sha256:480868e8c8c797794257e2abd88d0f9a8809b2fe956cbfbc05dcc0bca1f7cd43
+Status: Downloaded newer image for nginx:latest
+ ---> 448a08f1d2f9
+Step 2/8 : LABEL maintainer="PyScada | Martin Schröder <info@martin-schroeder.net"
+ ---> Running in 6d29d7e9ed6c
+Removing intermediate container 6d29d7e9ed6c
+ ---> 62a2cc24265b
+Step 3/8 : COPY nginx.conf /etc/nginx/
+ ---> 253587947086
+Step 4/8 : COPY ssl/pyscada_server.crt /etc/nginx/ssl/
+ ---> fc1ba5320495
+Step 5/8 : COPY ssl/pyscada_server.key /etc/nginx/ssl/
+ ---> 989cfb2a0dca
+Step 6/8 : EXPOSE 80
+ ---> Running in dbf36b747a39
+Removing intermediate container dbf36b747a39
+ ---> 8bf13a5c1245
+Step 7/8 : EXPOSE 443
+ ---> Running in 684f8933cf03
+Removing intermediate container 684f8933cf03
+ ---> 9c6eb4dbb188
+Step 8/8 : CMD ["nginx", "-g", "daemon off;"]
+ ---> Running in 97c5054865c1
+Removing intermediate container 97c5054865c1
+ ---> 7cf92d3a0dea
+Successfully built 7cf92d3a0dea
+Successfully tagged nginx:latest
+Creating network "docker_default" with the default driver
+Creating volume "docker_http" with default driver
+Creating volume "docker_sock" with default driver
+Creating volume "docker_dbdata" with default driver
+Pulling db (mysql:latest)...
+latest: Pulling from library/mysql
+Digest: sha256:a43f6e7e7f3a5e5b90f857fbed4e3103ece771b19f0f75880f767cf66bbb6577
+Status: Downloaded newer image for mysql:latest
+Creating mysql ... 
+[1A[2KCreating mysql ... [32mdone[0m[1B[36;1mOperations to perform:[0m
+[1m  Apply all migrations: [0madmin, auth, contenttypes, export, hmi, pyscada, sessions
+[36;1mRunning migrations:[0m
+  Applying contenttypes.0001_initial...[32;1m OK[0m
+  Applying auth.0001_initial...[32;1m OK[0m
+  Applying admin.0001_initial...[32;1m OK[0m
+  Applying admin.0002_logentry_remove_auto_add...[32;1m OK[0m
+  Applying admin.0003_logentry_add_action_flag_choices...[32;1m OK[0m
+  Applying contenttypes.0002_remove_content_type_name...[32;1m OK[0m
+  Applying auth.0002_alter_permission_name_max_length...[32;1m OK[0m
+  Applying auth.0003_alter_user_email_max_length...[32;1m OK[0m
+  Applying auth.0004_alter_user_username_opts...[32;1m OK[0m
+  Applying auth.0005_alter_user_last_login_null...[32;1m OK[0m
+  Applying auth.0006_require_contenttypes_0002...[32;1m OK[0m
+  Applying auth.0007_alter_validators_add_error_messages...[32;1m OK[0m
+  Applying auth.0008_alter_user_username_max_length...[32;1m OK[0m
+  Applying auth.0009_alter_user_last_name_max_length...[32;1m OK[0m
+  Applying auth.0010_alter_group_name_max_length...[32;1m OK[0m
+  Applying auth.0011_update_proxy_permissions...[32;1m OK[0m
+  Applying auth.0012_alter_user_first_name_max_length...[32;1m OK[0m
+  Applying pyscada.0001_initial...[32;1m OK[0m
+  Applying pyscada.0004_unit_udunit...[32;1m OK[0m
+  Applying pyscada.0002_event_hysteresis...[32;1m OK[0m
+  Applying pyscada.0003_auto_20151026_1826...[32;1m OK[0m
+  Applying pyscada.0005_merge...[32;1m OK[0m
+  Applying pyscada.0006_auto_20151130_1449...[32;1m OK[0m
+  Applying pyscada.0007_auto_20151201_1613...[32;1m OK[0m
+  Applying pyscada.0008_auto_20151201_1614...[32;1m OK[0m
+  Applying pyscada.0009_auto_20160111_1802...[32;1m OK[0m
+  Applying pyscada.0010_auto_20160115_0918...[32;1m OK[0m
+  Applying pyscada.0011_auto_20160115_0920...[32;1m OK[0m
+  Applying pyscada.0012_auto_20160119_0950...[32;1m OK[0m
+  Applying pyscada.0013_auto_20160204_0840...[32;1m OK[0m
+  Applying pyscada.0014_auto_20160210_1152...[32;1m OK[0m
+  Applying pyscada.0015_auto_20160215_1522...[32;1m OK[0m
+  Applying pyscada.0016_auto_20160215_2002...[32;1m OK[0m
+  Applying pyscada.0017_recordeddata...[32;1m OK[0m
+  Applying pyscada.0018_auto_20160228_1623...[32;1m OK[0m
+  Applying pyscada.0019_datamigration_20160228_1624...[32;1m OK[0m
+  Applying pyscada.0020_auto_20160228_1641...[32;1m OK[0m
+  Applying pyscada.0021_auto_20160228_1643...[32;1m OK[0m
+  Applying pyscada.0022_auto_20160228_2029...[32;1m OK[0m
+  Applying pyscada.0023_auto_20160314_1817...[32;1m OK[0m
+  Applying pyscada.0024_auto_20160517_1047...[32;1m OK[0m
+  Applying pyscada.0025_auto_20160517_1734...[32;1m OK[0m
+  Applying pyscada.0026_auto_20160518_0848...[32;1m OK[0m
+  Applying pyscada.0027_auto_20160530_1436...[32;1m OK[0m
+  Applying pyscada.0028_auto_20160630_0831...[32;1m OK[0m
+  Applying pyscada.0029_scaling_limit_input...[32;1m OK[0m
+  Applying pyscada.0030_device_polling_interval...[32;1m OK[0m
+  Applying pyscada.0031_delete_variableconfigfileimport...[32;1m OK[0m
+  Applying pyscada.0032_auto_20161107_2206...[32;1m OK[0m
+  Applying pyscada.0033_auto_20161107_2241...[32;1m OK[0m
+  Applying pyscada.0034_auto_20170213_0855...[32;1m OK[0m
+  Applying pyscada.0035_auto_20170224_1215...[32;1m OK[0m
+  Applying pyscada.0036_auto_20170224_1245...[32;1m OK[0m
+  Applying pyscada.0037_auto_20170418_0931...[32;1m OK[0m
+  Applying pyscada.0038_auto_20170707_1209...[32;1m OK[0m
+  Applying export.0001_initial...[32;1m OK[0m
+  Applying export.0002_auto_20151201_1617...[32;1m OK[0m
+  Applying export.0003_auto_20160315_1140...[32;1m OK[0m
+  Applying export.0004_exporttask...[32;1m OK[0m
+  Applying export.0005_auto_20160403_1454...[32;1m OK[0m
+  Applying export.0006_auto_20160404_0949...[32;1m OK[0m
+  Applying export.0007_auto_20161124_1002...[32;1m OK[0m
+  Applying export.0008_auto_20161124_1003...[32;1m OK[0m
+  Applying export.0009_auto_20161128_0948...[32;1m OK[0m
+  Applying export.0010_auto_20161128_1049...[32;1m OK[0m
+  Applying export.0011_exporttask_filename...[32;1m OK[0m
+  Applying export.0012_exporttask_backgroundprocess...[32;1m OK[0m
+  Applying export.0013_auto_20170711_0729...[32;1m OK[0m
+  Applying export.0014_auto_20170711_1326...[32;1m OK[0m
+  Applying export.0015_remove_exporttask_backgroundtask...[32;1m OK[0m
+  Applying export.0016_auto_20191004_0912...[32;1m OK[0m
+  Applying pyscada.0039_auto_20170711_1326...[32;1m OK[0m
+  Applying pyscada.0040_auto_20170905_0942...[32;1m OK[0m
+  Applying pyscada.0041_update_protocol_id...[32;1m OK[0m
+  Applying pyscada.0042_auto_20180604_1240...[32;1m OK[0m
+  Applying pyscada.0043_devicewritetask_property_name...[32;1m OK[0m
+  Applying pyscada.0044_auto_20180704_1307...[32;1m OK[0m
+  Applying pyscada.0045_auto_20180705_1341...[32;1m OK[0m
+  Applying pyscada.0046_remove_devicewritetask_property_name...[32;1m OK[0m
+  Applying pyscada.0047_recordeddatanew...[32;1m OK[0m
+  Applying pyscada.0048_datamigration_20181025_0918...[32;1m OK[0m
+  Applying pyscada.0049_auto_20181025_1049...[32;1m OK[0m
+  Applying pyscada.0047_variableproperty_unit...[32;1m OK[0m
+  Applying pyscada.0050_merge_20181130_1143...[32;1m OK[0m
+  Applying pyscada.0051_auto_20181206_1107...[32;1m OK[0m
+  Applying pyscada.0052_auto_20181207_1019...[32;1m OK[0m
+  Applying pyscada.0053_auto_20190307_1423...[32;1m OK[0m
+  Applying pyscada.0054_auto_20190411_0749...[32;1m OK[0m
+  Applying pyscada.0055_auto_20190625_1752...[32;1m OK[0m
+  Applying pyscada.0056_auto_20190625_1823...[32;1m OK[0m
+  Applying pyscada.0057_auto_20191004_0912...[32;1m OK[0m
+  Applying pyscada.0053_auto_20190207_1526...[32;1m OK[0m
+  Applying pyscada.0054_auto_20190208_0913...[32;1m OK[0m
+  Applying pyscada.0058_merge_20191206_1328...[32;1m OK[0m
+  Applying pyscada.0059_auto_20200211_1049...[32;1m OK[0m
+  Applying pyscada.0060_auto_20200914_1417...[32;1m OK[0m
+  Applying pyscada.0061_devicereadtask...[32;1m OK[0m
+  Applying pyscada.0062_auto_20201002_0830...[32;1m OK[0m
+  Applying pyscada.0063_complexevent_complexeventitem_complexeventitemvariable...[32;1m OK[0m
+  Applying pyscada.0064_auto_20201005_1443...[32;1m OK[0m
+  Applying pyscada.0065_auto_20201005_1454...[32;1m OK[0m
+  Applying pyscada.0066_auto_20201006_0718...[32;1m OK[0m
+  Applying pyscada.0067_auto_20201006_0719...[32;1m OK[0m
+  Applying pyscada.0068_auto_20201006_0826...[32;1m OK[0m
+  Applying pyscada.0069_complexeventgroup_current_level...[32;1m OK[0m
+  Applying pyscada.0070_auto_20201006_1327...[32;1m OK[0m
+  Applying pyscada.0071_recordedevent_level...[32;1m OK[0m
+  Applying pyscada.0072_auto_20201006_1408...[32;1m OK[0m
+  Applying pyscada.0073_auto_20201007_0858...[32;1m OK[0m
+  Applying pyscada.0074_complexeventitem_active...[32;1m OK[0m
+  Applying pyscada.0075_auto_20201007_1609...[32;1m OK[0m
+  Applying pyscada.0076_mail_html_message...[32;1m OK[0m
+  Applying pyscada.0077_auto_20201104_1656...[32;1m OK[0m
+  Applying pyscada.0078_auto_20201123_1906...[32;1m OK[0m
+  Applying pyscada.0079_devicehandler...[32;1m OK[0m
+  Applying pyscada.0080_variableproperty_last_modified...[32;1m OK[0m
+  Applying pyscada.0081_calculatedvariable_periodfield_variablecalculatedfields...[32;1m OK[0m
+  Applying pyscada.0082_auto_20211112_1043...[32;1m OK[0m
+  Applying pyscada.0083_auto_20211115_0812...[32;1m OK[0m
+  Applying pyscada.0084_auto_20211115_1503...[32;1m OK[0m
+  Applying pyscada.0085_calculatedvariableselector_active...[32;1m OK[0m
+  Applying pyscada.0086_auto_20211115_1612...[32;1m OK[0m
+  Applying pyscada.0087_auto_20211116_1329...[32;1m OK[0m
+  Applying pyscada.0088_auto_20211117_1023...[32;1m OK[0m
+  Applying pyscada.0089_calculatedvariable_state...[32;1m OK[0m
+  Applying pyscada.0090_auto_20211117_1239...[32;1m OK[0m
+  Applying pyscada.0091_auto_20211118_1019...[32;1m OK[0m
+  Applying pyscada.0092_auto_20211125_1054...[32;1m OK[0m
+  Applying pyscada.0093_auto_20211125_1256...[32;1m OK[0m
+  Applying hmi.0001_initial...[32;1m OK[0m
+  Applying hmi.0002_auto_20151016_1932...[32;1m OK[0m
+  Applying hmi.0003_auto_20151130_1456...[32;1m OK[0m
+  Applying hmi.0004_auto_20151130_1502...[32;1m OK[0m
+  Applying hmi.0005_auto_20160111_1822...[32;1m OK[0m
+  Applying hmi.0006_auto_20160111_1848...[32;1m OK[0m
+  Applying hmi.0007_auto_20160518_0848...[32;1m OK[0m
+  Applying hmi.0008_auto_20180620_0716...[32;1m OK[0m
+  Applying hmi.0009_controlitem_property_name...[32;1m OK[0m
+  Applying hmi.0010_auto_20180705_1341...[32;1m OK[0m
+  Applying hmi.0011_auto_20180710_1549...[32;1m OK[0m
+  Applying hmi.0012_auto_20180912_1302...[32;1m OK[0m
+  Applying hmi.0013_widget_update_20180912_1315...[32;1m OK[0m
+  Applying hmi.0014_auto_20180912_1340...[32;1m OK[0m
+  Applying hmi.0015_auto_20180913_1608...[32;1m OK[0m
+  Applying hmi.0016_auto_20181004_0831...[32;1m OK[0m
+  Applying hmi.0017_groupdisplaypermission_forms...[32;1m OK[0m
+  Applying hmi.0018_auto_20181205_0937...[32;1m OK[0m
+  Applying hmi.0019_auto_20181205_1058...[32;1m OK[0m
+  Applying hmi.0020_pie...[32;1m OK[0m
+  Applying hmi.0021_auto_20190528_0924...[32;1m OK[0m
+  Applying hmi.0022_auto_20191004_0912...[32;1m OK[0m
+  Applying hmi.0023_dropdownitem_value...[32;1m OK[0m
+  Applying hmi.0024_auto_20191212_1516...[32;1m OK[0m
+  Applying hmi.0025_widgetcontent_content_str...[32;1m OK[0m
+  Applying hmi.0026_auto_20200915_1333...[32;1m OK[0m
+  Applying hmi.0027_auto_20200915_1407...[32;1m OK[0m
+  Applying hmi.0028_auto_20200915_1540...[32;1m OK[0m
+  Applying hmi.0029_auto_20200916_0720...[32;1m OK[0m
+  Applying hmi.0030_auto_20200918_0842...[32;1m OK[0m
+  Applying hmi.0031_auto_20200918_1206...[32;1m OK[0m
+  Applying hmi.0032_auto_20200918_1408...[32;1m OK[0m
+  Applying hmi.0033_auto_20200918_1439...[32;1m OK[0m
+  Applying hmi.0034_auto_20200918_1445...[32;1m OK[0m
+  Applying hmi.0035_auto_20200918_1517...[32;1m OK[0m
+  Applying hmi.0036_auto_20200923_0850...[32;1m OK[0m
+  Applying hmi.0037_auto_20200923_0852...[32;1m OK[0m
+  Applying hmi.0038_auto_20200929_1410...[32;1m OK[0m
+  Applying hmi.0039_auto_20201002_0928...[32;1m OK[0m
+  Applying hmi.0040_dictionary_dictionaryitem...[32;1m OK[0m
+  Applying hmi.0041_auto_20201002_0934...[32;1m OK[0m
+  Applying hmi.0042_auto_20201201_1335...[32;1m OK[0m
+  Applying hmi.0043_auto_20201201_1411...[32;1m OK[0m
+  Applying hmi.0044_auto_20201201_1539...[32;1m OK[0m
+  Applying hmi.0045_auto_20201201_2100...[32;1m OK[0m
+  Applying hmi.0046_auto_20201201_2109...[32;1m OK[0m
+  Applying hmi.0047_auto_20201202_1445...[32;1m OK[0m
+  Applying hmi.0048_chartaxis_fill...[32;1m OK[0m
+  Applying hmi.0049_auto_20201202_2037...[32;1m OK[0m
+  Applying hmi.0050_auto_20201203_2101...[32;1m OK[0m
+  Applying hmi.0051_auto_20201204_0901...[32;1m OK[0m
+  Applying hmi.0052_auto_20201204_0949...[32;1m OK[0m
+  Applying hmi.0053_auto_20211118_1438...[32;1m OK[0m
+  Applying hmi.0054_displayvalueoption_type...[32;1m OK[0m
+  Applying pyscada.0094_move_dictionaries...[32;1m OK[0m
+  Applying pyscada.0095_auto_20211203_1949...[32;1m OK[0m
+  Applying pyscada.0096_auto_20211210_0924...[32;1m OK[0m
+  Applying pyscada.0097_auto_20220118_1046...[32;1m OK[0m
+  Applying pyscada.0098_alter_device_polling_interval...[32;1m OK[0m
+  Applying pyscada.0099_alter_dictionaryitem_label...[32;1m OK[0m
+  Applying pyscada.0100_device_instrument_handler...[32;1m OK[0m
+  Applying hmi.0055_auto_20211125_1405...[32;1m OK[0m
+  Applying hmi.0056_auto_20211210_1608...[32;1m OK[0m
+  Applying hmi.0057_auto_20211214_1157...[32;1m OK[0m
+  Applying hmi.0058_auto_20220523_1639...[32;1m OK[0m
+  Applying hmi.0059_alter_view_theme...[32;1m OK[0m
+  Applying hmi.0060_chartaxis_show_bars...[32;1m OK[0m
+  Applying hmi.0061_auto_20220610_1459...[32;1m OK[0m
+  Applying hmi.0062_auto_20220616_1523...[32;1m OK[0m
+  Applying hmi.0063_move_group_display_permissions...[32;1m OK[0m
+  Applying hmi.0064_auto_20220617_1333...[32;1m OK[0m
+  Applying hmi.0065_auto_20220620_0854...[32;1m OK[0m
+  Applying hmi.0066_auto_20221205_1435...[32;1m OK[0m
+  Applying hmi.0067_alter_cssclass_options...[32;1m OK[0m
+  Applying hmi.0068_alter_displayvalueoption_timestamp_conversion...[32;1m OK[0m
+  Applying hmi.0069_displayvalueoption_color_and_more...[32;1m OK[0m
+  Applying hmi.0070_move_displayvalueoptions...[32;1m OK[0m
+  Applying hmi.0071_remove_displayvalueoption_color_1_and_more...[32;1m OK[0m
+  Applying hmi.0072_alter_groupdisplaypermission_hmi_group...[32;1m OK[0m
+  Applying pyscada.0101_complexeventchangevariable...[32;1m OK[0m
+  Applying pyscada.0102_move_complex_event_variables...[32;1m OK[0m
+  Applying pyscada.0103_remove_complexevent_new_value_and_more...[32;1m OK[0m
+  Applying pyscada.0104_rename_complexeventitem_complexeventinput_and_more...[32;1m OK[0m
+  Applying pyscada.0105_edit_generic_device_protocol...[32;1m OK[0m
+  Applying sessions.0001_initial...[32;1m OK[0m
+
+265 static files copied to '/src/pyscada/http/static'.
+Installed 124 object(s) from 1 fixture(s)
+Installed 16 object(s) from 1 fixture(s)
+app django.contrib.admin
+app django.contrib.auth
+app django.contrib.contenttypes
+app django.contrib.sessions
+app django.contrib.messages
+app django.contrib.staticfiles
+app pyscada
+app pyscada.hmi
+app pyscada.export
+--> add pyscada.export
+app pyscada.core
+--> add pyscada.mail
+--> add pyscada.event
+--> add pyscada.generic
+init db completed
+mysql is up-to-date
+Creating pyscada ... 
+[1A[2KCreating pyscada ... [32mdone[0m[1BCreating nginx   ... 
+Host is already in use by another container
+[1A[2KCreating nginx   ... [31merror[0m[1B
+ERROR: for nginx  Cannot start service nginx: driver failed programming external connectivity on endpoint nginx (c2ab307477e3a2e8be406fd377c7585eb382630bb5979461ac5a63984c6c97f1): Error starting userland proxy: listen tcp4 0.0.0.0:443: bind: address already in use
+
+ERROR: for nginx  Cannot start service nginx: driver failed programming external connectivity on endpoint nginx (c2ab307477e3a2e8be406fd377c7585eb382630bb5979461ac5a63984c6c97f1): Error starting userland proxy: listen tcp4 0.0.0.0:443: bind: address already in use
+Encountered errors while bringing up the project.
+Create admin account for the web interface : 
+Starting mysql ... 
+[1A[2KStarting mysql ... [32mdone[0m[1BUsername (leave blank to use 'root'): 
+Email address: tr est@mail.com
+Password: 
+Password (again): 
+Superuser created successfully.
+PyScada installed
+Connect to http://127.0.0.1 using admin account created previously

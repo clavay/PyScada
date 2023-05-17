@@ -9,7 +9,7 @@ from pyscada.models import Unit, Dictionary, DictionaryItem
 from pyscada.models import DeviceWriteTask, DeviceReadTask
 from pyscada.models import Log
 from pyscada.models import BackgroundProcess
-from pyscada.models import ComplexEventGroup, ComplexEvent, ComplexEventItem
+from pyscada.models import ComplexEvent, ComplexEventLevel, ComplexEventInput, ComplexEventOutput
 from pyscada.models import Event
 from pyscada.models import RecordedEvent, RecordedData
 from pyscada.models import Mail
@@ -19,11 +19,11 @@ from django import forms
 from django.contrib.admin import AdminSite
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.db.models.fields.related import OneToOneRel
 
 from django import forms
-from django.core.exceptions import ValidationError
+from django.db.utils import ProgrammingError, OperationalError
 from django.conf import settings
 
 import datetime
@@ -385,14 +385,21 @@ class DeviceAdmin(admin.ModelAdmin):
     protocol_list = list()
     protocol_list.append("generic")
     if hasattr(settings, 'INSTALLED_APPS'):
-        for protocol in DeviceProtocol.objects.filter(app_name__in=settings.INSTALLED_APPS):
-            protocol_list.append(protocol.protocol)
+        try:
+            for protocol in DeviceProtocol.objects.filter(app_name__in=settings.INSTALLED_APPS):
+                protocol_list.append(protocol.protocol)
+        except ProgrammingError:
+            pass
+        except OperationalError:
+            pass
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         # For new device, show all the protocols from the installed apps in settings.py
         # For existing device, show only the selected protocol to avoid changing
         if db_field.name == "protocol":
-            if 'object_id' in request.resolver_match.kwargs and Device.objects.get(id=request.resolver_match.kwargs['object_id']) is not None:
+            if 'object_id' in request.resolver_match.kwargs \
+            and Device.objects.get(id=request.resolver_match.kwargs['object_id']) is not None \
+            and Device.objects.get(id=request.resolver_match.kwargs['object_id']).protocol:
                 kwargs["queryset"] = DeviceProtocol.objects.filter(protocol__in=[Device.objects.get(id=request.resolver_match.kwargs['object_id']).protocol.protocol,])
             else:
                 kwargs["queryset"] = DeviceProtocol.objects.filter(protocol__in=self.protocol_list)
@@ -620,8 +627,8 @@ class BackgroundProcessAdmin(admin.ModelAdmin):
 
 
 class RecordedEventAdmin(admin.ModelAdmin):
-    list_display = ('id', 'event', 'complex_event_group', 'time_begin', 'time_end', 'active',)
-    list_display_links = ('event', 'complex_event_group',)
+    list_display = ('id', 'event', 'complex_event', 'time_begin', 'time_end', 'active',)
+    list_display_links = ('event', 'complex_event',)
     list_filter = ('event', 'active')
     readonly_fields = ('time_begin', 'time_end',)
     save_as = True
@@ -637,15 +644,22 @@ class MailAdmin(admin.ModelAdmin):
         return datetime.datetime.fromtimestamp(int(instance.timestamp)).strftime('%Y-%m-%d %H:%M:%S')
 
 
-class ComplexEventAdminInline(admin.TabularInline):
-    model = ComplexEvent
+class ComplexEventOutputAdminInline(admin.TabularInline):
+    model = ComplexEventOutput
+    extra = 0
+    show_change_link = False
+    fields = ('variable', 'value')
+
+
+class ComplexEventLevelAdminInline(admin.TabularInline):
+    model = ComplexEventLevel
     extra = 0
     show_change_link = True
     readonly_fields = ('active',)
 
 
-class ComplexEventItemAdminInline(admin.StackedInline):
-    model = ComplexEventItem
+class ComplexEventInputAdminInline(admin.StackedInline):
+    model = ComplexEventInput
     extra = 0
     fieldsets = (
         (None, {
@@ -657,29 +671,31 @@ class ComplexEventItemAdminInline(admin.StackedInline):
     raw_id_fields = ('variable', 'variable_limit_low', 'variable_limit_high',)
 
 
-class ComplexEventGroupAdmin(admin.ModelAdmin):
-    list_display = ('id', 'label', 'variable_to_change', 'default_send_mail', 'default_value', 'last_level',)
+class ComplexEventAdmin(admin.ModelAdmin):
+    list_display = ('id', 'label', 'default_send_mail', 'last_level',)
     list_display_links = ('id', 'label',)
-    list_filter = ('variable_to_change', 'default_send_mail', 'default_value',)
+    list_filter = ('default_send_mail',)
     filter_horizontal = ('complex_mail_recipients',)
-    inlines = [ComplexEventAdminInline]
-    raw_id_fields = ('variable_to_change',)
+    inlines = [ComplexEventLevelAdminInline, ComplexEventOutputAdminInline]
     readonly_fields = ('last_level',)
     save_as = True
     save_as_continue = True
 
 
-class ComplexEventAdmin(admin.ModelAdmin):
-    list_display = ('id', 'level', 'send_mail', 'new_value', 'complex_event_group', 'order', 'active',)
+class ComplexEventLevelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'level', 'send_mail', 'complex_event', 'order', 'active',)
     list_display_links = ('id',)
-    list_filter = ('complex_event_group__label', 'level', 'send_mail',)
-    inlines = [ComplexEventItemAdminInline]
+    list_filter = ('complex_event__label', 'level', 'send_mail',)
+    inlines = [ComplexEventInputAdminInline, ComplexEventOutputAdminInline]
     readonly_fields = ('active',)
     save_as = True
     save_as_continue = True
 
+    def has_module_permission(self, request):
+        return False
 
-class ComplexEventItemAdmin(admin.ModelAdmin):
+
+class ComplexEventInputAdmin(admin.ModelAdmin):
     list_display = ('id', 'fixed_limit_low', 'variable_limit_low', 'limit_low_type', 'hysteresis_low', 'variable',
                     'fixed_limit_high', 'variable_limit_high', 'limit_high_type', 'hysteresis_high',)
     list_display_links = ('id',)
@@ -738,8 +754,8 @@ admin_site.register(PeriodicField, PeriodicFieldAdmin)
 admin_site.register(ExtendedCalculatedVariable, CalculatedVariableAdmin)
 admin_site.register(Scaling, ScalingAdmin)
 admin_site.register(Unit)
-admin_site.register(ComplexEventGroup, ComplexEventGroupAdmin)
 admin_site.register(ComplexEvent, ComplexEventAdmin)
+admin_site.register(ComplexEventLevel, ComplexEventLevelAdmin)
 admin_site.register(Event, EventAdmin)
 admin_site.register(RecordedEvent, RecordedEventAdmin)
 admin_site.register(Mail, MailAdmin)

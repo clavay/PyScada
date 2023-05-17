@@ -3,6 +3,21 @@ PyScada a open source SCADA system
 
 A Open Source SCADA System with HTML5 HMI, build using the Django framework. If you like to setup your own SCADA system head over to http://pyscada.rtfd.io.
 
+Planed Changes and ToDos for Version 0.8.0
+------------------------------------------
+
+This section describes the planed changes for the next major upgrade to PyScada and will be removed after the upgrade.
+
+- upgrade to Django 4.2 LTS
+        * deal with the app_label not defined error for pyscada/models.py
+- moving the plugins in separate repositories
+        * pyscada.modbus
+        * pyscada.visa
+        * pyscada.phant
+        * pyscada.onewire
+        * pyscada.systemstat
+- renaming name of the default branche to "main"
+
 Features
 --------
 
@@ -22,32 +37,18 @@ Features
 Structure
 ---------
 
-.. image:: https://github.com/trombastic/PyScada/raw/dev/0.7.x/docs/pic/PyScada_module_overview.png
+.. image:: https://github.com/pyscada/PyScada/raw/master/docs/pic/PyScada_module_overview.png
     :width: 600px
 
 Dependencies
 ------------
 
 - core/HMI
-	* python 2.7
-	* django==1.11
+	* python 3.5
+	* django==4.2
 	* numpy>=1.6.0
 	* pillow
 	* python-daemon
-- ModbusMaster
-	* pymodbus>=1.2
-- HDF5Export
-	* h5py>=2.1.1
-- SystemStatistics
-	* psutil
-- VISA
-	* PyVisa >= 1.8
-- BACNet/IP
-	* bacpypes
-- 1-Wire
-	* OWFS
-	* PyOWNet
-
 
 What is Working
 ---------------
@@ -75,23 +76,16 @@ Installation
 
 Detailed installation instruction can be found at: http://pyscada.rtfd.io .
 
-@cwraig wrote some nice Blog articles on different topics for using PyScada with the Raspberry Pi:
- - `PyScada on Raspberry PI for temperature monitoring with DS18B20 on 1-Wire – Part 1 – Software Installation <https://cwraig.id.au/2017/09/17/pyscada-on-raspberry-pi-for-temperature-monitoring-with-ds18b20-on-1-wire-part-1-software- installation/>`_
- - `PyScada on Raspberry PI for temperature monitoring with DS18B20 on 1-Wire – Part 2 – DS18B20 Hardware and Software <https://cwraig.id.au/2017/09/17/pyscada-on-raspberry-pi-for-temperature-monitoring-with-ds18b20-on-1-wire-part-2-ds18b20-hardware-and-software/>`_
- - `PyScada on Raspberry PI for temperature monitoring with DS18B20 on 1-Wire – Part 3 – PyScada Basic Configuration <https://cwraig.id.au/2017/09/21/pyscada-on-raspberry-pi-for-temperature-monitoring-with-ds18b20-on-1-wire-part-3-pyscada-basic-configuration/>`_
- - `PyScada on Raspberry PI for temperature monitoring with DS18B20 on 1-Wire – Part 4 – PyScada HMI Configuration <https://cwraig.id.au/2017/09/24/pyscada-on-raspberry-pi-for-temperature-monitoring-with-ds18b20-on-1-wire-part-4-pyscada-hmi-configuration/>`_
- - `PyScada on Raspberry PI for Modbus RTU <https://cwraig.id.au/2018/01/21/pyscada-on-raspberry-pi-for-modbus-rtu/>`_
-
 
 Contribute
 ----------
 
- - Issue Tracker: https://github.com/trombastic/PyScada/issues
- - Source Code: https://github.com/trombastic/PyScada
+ - Issue Tracker: https://github.com/pyscada/PyScada/issues
+ - Source Code: https://github.com/pyscada/PyScada
 
 
 License
 -------
 
-The project is licensed under the _GNU General Public License v3 (GPLv3)_.
+The project is licensed under the _GNU Affero General Public License v3 (AGPLv3)_.
 -

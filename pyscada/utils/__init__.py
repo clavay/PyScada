@@ -60,16 +60,25 @@ def get_group_display_permission_list(items, groups):
         QuerySet of items filtered
     """
     if len(groups) == 0:
-        return items.all()
-    result = items.filter(
-        groupdisplaypermission__group_display_permission__hmi_group__in=groups,
-        groupdisplaypermission__type=0,
-    ).distinct()
-    if items.first() is not None and items.first().groupdisplaypermission.model.objects.filter(type=1).exists():
-        result = result | items.exclude(
+        result = items.filter(
+            groupdisplaypermission__group_display_permission__hmi_group__isnull=True,
+            groupdisplaypermission__type=0,
+        ).distinct()
+        if items.first() is not None and items.first().groupdisplaypermission.model.objects.filter(type=1, group_display_permission__hmi_group=None).exists():
+            result = result | items.exclude(
+                groupdisplaypermission__group_display_permission__hmi_group__isnull=True,
+                groupdisplaypermission__type=1
+            ).distinct()
+    else:
+        result = items.filter(
             groupdisplaypermission__group_display_permission__hmi_group__in=groups,
-            groupdisplaypermission__type=1,
-            groupdisplaypermission__group_display_permission__isnull=False).distinct()
+            groupdisplaypermission__type=0,
+        ).distinct()
+        if items.first() is not None and items.first().groupdisplaypermission.model.objects.filter(type=1, group_display_permission__hmi_group__in=groups).exists():
+            result = result | items.exclude(
+                groupdisplaypermission__group_display_permission__hmi_group__in=groups,
+                groupdisplaypermission__type=1
+            ).distinct()
     return result
 
 
@@ -289,3 +298,12 @@ def max_pass(my_marks, my_pass, compare='lte'):
             elif max_value < x < my_pass and compare == 'lt':
                 max_value = x
     return max_value
+
+
+def set_bit(v, index, x):
+    """Set the index:th bit of v to 1 if x is truthy, else to 0, and return the new value."""
+    mask = 1 << index   # Compute mask, an integer with just bit 'index' set.
+    v &= ~mask          # Clear the bit indicated by the mask (if x is False)
+    if x:
+        v |= mask         # If x was True, set the bit indicated by the mask.
+    return v            # Return the result, we're done.

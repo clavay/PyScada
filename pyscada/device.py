@@ -5,7 +5,7 @@ from pyscada.models import DeviceProtocol, VariableProperty
 import pyscada
 
 import sys
-from time import time, sleep
+from time import time, sleep, time_ns
 import logging
 logger = logging.getLogger(__name__)
 
@@ -119,7 +119,7 @@ class GenericHandlerDevice:
         return None
 
     def time(self):
-        return time()
+        return time_ns() / 1000000000
 
 
 class GenericDevice:
@@ -184,8 +184,9 @@ class GenericDevice:
         for item in self.variables:
             if self.variables[item].id == variable_id:
                 if not self.variables[item].writeable:
+                    logger.info(f"Variable '{self.variables[item]}' is not writeable. Write task refused.")
                     return False
                 read_value = self._h.write_data(variable_id, value, task)
-                if read_value is not None and self.variables[item].update_value(read_value, time()):
+                if read_value is not None and self.variables[item].update_value(read_value, time_ns() / 1000000000):
                     output.append(self.variables[item].create_recorded_data_element())
         return output
