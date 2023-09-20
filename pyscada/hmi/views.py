@@ -21,15 +21,19 @@ from pyscada.hmi.models import Page
 from pyscada.hmi.models import SlidingPanelMenu
 from pyscada.utils import gen_hiddenConfigHtml, get_group_display_permission_list
 
-from django.http import HttpResponse
+from django.http import HttpResponse, StreamingHttpResponse, HttpRequest
 from django.template.loader import get_template
 from django.template.response import TemplateResponse
 from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.views.decorators.csrf import requires_csrf_token
+from django.views.decorators.http import require_GET
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.db.models.fields.related import OneToOneRel
+
+import channels.layers
+from asgiref.sync import sync_to_async
 
 import time
 import json
@@ -773,6 +777,113 @@ def get_cache_data(request):
     data["server_time"] = time.time() * 1000
     return HttpResponse(json.dumps(data), content_type="application/json")
 
+def gen_message(msg):
+    return f'data: {msg} '
+
+def iterator():
+    for i in range(100000):
+        yield gen_message(f'iteration {i}')
+
+
+async def aget_data(request: HttpRequest,) -> StreamingHttpResponse:
+    logger.info("aget_data function start")
+    # get data from a list of variables and variable properties ids
+    active_variables = []
+    if "variables[]" in request.GET:
+        active_variables = request.GET.getlist("variables[]")
+        active_variables = list(int_filter(active_variables))
+    active_variable_properties = []
+    #if "variable_properties[]" in request.GET:
+    #    active_variable_properties = request.GET.getlist("variable_properties[]")
+
+    # get historical period if needed
+    timestamp_from = request.GET.get("timestamp_from", None)
+    timestamp_to = request.GET.get("timestamp_to", time.time())
+
+    # convert seconds to millisconds
+    if timestamp_from is not None:
+        timestamp_from = timestamp_from / 1000
+    if timestamp_to is not None:
+        timestamp_to = timestamp_to / 1000
+
+    return StreamingHttpResponse(
+        streaming_content=stream_messages(timestamp_from=timestamp_from, timestamp_to=timestamp_to, active_variables=active_variables, active_variable_properties=active_variable_properties),
+        content_type="text/event-stream",
+    )
+
+async def stream_messages(active_variables: list, active_variable_properties: list, timestamp_from: int | None = None, timestamp_to: int | None = None):  # -> AsyncGenerator[str, None]:
+    data = dict()
+
+    logger.info(active_variables)
+    logger.info(active_variable_properties)
+    logger.info(timestamp_from)
+    logger.info(timestamp_to)
+
+    # if a timestamp_from is set, get data from the DB
+    if timestamp_from:
+        # TODO : async and send sse
+        data = RecordedData.objects.db_data(
+            variable_ids=active_variables,
+            time_min=timestamp_from,
+            time_max=timestamp_to,
+            time_in_ms=True,
+            query_first_value=init,
+        )
+
+    # Add last value for variable without any data (as variable not logging to RecordedData model : systemstat timestamps).
+    if timestamp_from is None:
+        # if no timestamp_from define, try from all values
+        timestamp_from = 0
+    for v_id in active_variables:
+        if int(v_id) not in data:
+            try:
+                v = Variable.objects.get(id=v_id)
+            except Variable.DoesNotExist:
+                logger.info(f"Variable {v_id} DoesNotExist")
+            else:
+                # TODO async and send sse
+                if v.query_prev_value(timestamp_from / 1000):
+                    # add 5 seconds to let the request from the server to come
+                    if (
+                        v.timestamp_old is not None
+                        and v.timestamp_old <= timestamp_to + 5
+                        and v.prev_value is not None
+                    ):
+                        data[int(v_id)] = [[v.timestamp_old * 1000, v.prev_value]]
+
+    data["variable_properties"] = {}
+    data["variable_properties_last_modified"] = {}
+
+    for item in VariableProperty.objects.filter(pk__in=active_variable_properties):
+        data["variable_properties"][item.pk] = item.value()
+        data["variable_properties_last_modified"][item.pk] = (
+            item.last_modified.timestamp() * 1000
+        )
+
+    # Get channel layer to set inter process communication
+    channel_layer = channels.layers.get_channel_layer()
+
+    # Add group to receive new read data from any device
+    #await channel_layer.group_add("PyScadaFromDevice", "DeviceNewReadData")
+    #await channel_layer.receive("PyScadaFromDevice")
+
+    logger.info("channel_layer setup")
+
+    # wait for message
+    message = await channel_layer.receive("PyScadaFromDevice")
+
+    logger.info(message)
+
+    yield sse_message(
+        event="message_created",
+        event_id=5,
+        data=json.dumps(message),
+    )
+
+    logger.info("while end")
+
+def sse_message(*, event: str, event_id: int, data: str) -> str:
+    return f"id: {event_id}\n" f"event: {event}\n" f"data: {data}\n\n"
 
 def logout_view(request):
     logger.info("logout %s" % request.user)
