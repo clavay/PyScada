@@ -1033,6 +1033,18 @@ class Widget(models.Model):
         else:
             return str(self.id) + ": " + "None, None"
 
+    def get_title(self):
+        # if no content return empty string
+        # if content, return title field of widget content or widget title
+        if self.content is None:
+            return ""
+        content_model = self.content._import_content_model()
+        title = content_model.title
+        if title is not None:
+            return title
+        else:
+            return self.title
+
     def css_class(self):
         widget_size = "col-xs-12 col-sm-12 col-md-12 col-lg-12"
         widgets = Widget.objects.filter(

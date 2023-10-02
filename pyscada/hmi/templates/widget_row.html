@@ -11,8 +11,11 @@
 {% endif %}
 {% for content in main_content %}
     <div id="widget_{{content.widget.pk}}" class="widget {{ content.widget.css_class }} {% if content.widget.extra_css_class %}{{ content.widget.extra_css_class }}{% endif %}"> <!-- {{ content.widget.title }} -->
-        {% if topbar and content.topbar is not None %}{{ content.topbar|safe }}{% endif %}
+      <div class="pyscada-widget-title">{{ content.title }}</div>
+        {% if topbar and content.topbar is not None %}<div class="pyscada-widget-topbar">{{ content.topbar|safe }}</div>{% endif %}
+      <div class="pyscada-widget-content">
         {{ content.html|safe }}
+      </div>
     </div>
 {% endfor %}
 {%if sidebar_visible and not topbar %}

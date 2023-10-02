@@ -225,7 +225,7 @@ def view(request, link_title):
             elif mc == "":
                 logger.info(f"Content of widget {widget} is empty")
             else:
-                main_content.append(dict(html=mc, widget=widget, topbar=sbc))
+                main_content.append(dict(html=mc, widget=widget, topbar=sbc, title=widget.get_title()))
             if sbc is not None:
                 sidebar_content.append(dict(html=sbc, widget=widget))
             if type(opts) == dict and "topbar" in opts and opts["topbar"] == True:
