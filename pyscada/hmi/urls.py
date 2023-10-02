@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.urls import path
-from . import views
+from . import views2 as views
 from .consumers import ServerSentEventsConsumer
 from pyscada.admin import admin_site
 from django.contrib.auth import views as auth_views
@@ -36,30 +36,13 @@ urlpatterns = [
         name="password_change_done",
     ),
     path("json/cache_data/", views.get_cache_data),
-    path("json/async_cache_data/", views.aget_data),
+    path("json/aget_cache_data/", views.aget_cache_data),
+    path("json/aget_last_data/", views.aget_last_data),
+    path("json/aget_new_data/", views.aget_new_data),
     path("json/log_data/", views.log_data),
     path("form/write_task/", views.form_write_task),
     path("form/read_task/", views.form_read_task),
     path("form/read_all_task/", views.form_read_all_task),
     path("form/write_property2/", views.form_write_property2),
     path("view/<link_title>/", views.view, name="main-view"),
-]
-
-import asyncio
-
-from django.http import StreamingHttpResponse
-from django.urls import path
-
-
-async def a_streaming_view(request):
-    async def response_content():
-        for i in range(1, 6):
-            await asyncio.sleep(1)
-            yield f"Chunk {i}\n"
-
-    return StreamingHttpResponse(response_content())
-
-
-urlpatterns += [
-    path('a-streaming-view/', a_streaming_view)
 ]
