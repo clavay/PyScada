@@ -60,6 +60,9 @@
                 {% else %}
                     {% include "value_field.html" %}
                 {% endif %}
+            {% elif item.display_value_options.type == 1 %}
+                <!-- Horizontal gauge -->
+                {% include "horizontal_gauge.html" %}
             {% elif item.display_value_options.type == 3 %}
                 <!-- Gauge -->
                 {% include "gauge.html" with gauge=item %}

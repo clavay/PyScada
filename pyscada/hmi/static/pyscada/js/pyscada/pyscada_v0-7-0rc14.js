@@ -777,7 +777,7 @@ var store_temp_ajax_data = null;
              var var_id = get_config_from_hidden_config("controlitem", 'id', control_item_id.split('-')[1], type);
              var dictionary_value = get_config_from_hidden_config(type.replace('-', ''), 'id', var_id, 'dictionary');
              var ci_label = get_config_from_hidden_config("controlitem", 'id', control_item_id.split('-')[1], 'label');
-             if (display_value_option_id == 'None' || color_only == 'False') {
+             if ((display_value_option_id == 'None' || color_only == 'False') && ci_type != 1) {
                 if (typeof(val)==="number") {
                     if (timestamp_conversion_value != null && timestamp_conversion_value != 0 && typeof(timestamp_conversion_value) != "undefined"){
                         // Transform timestamps
@@ -805,6 +805,9 @@ var store_temp_ajax_data = null;
                  elem = document.querySelector("div.hidden.controlitem-config2[data-id='" + control_item_id.split('-')[1] + "']");
                  var event = new CustomEvent("changePyScadaControlItemColor_" + control_item_id.split('-')[1], { detail: update_data_colors(control_item_id,val) });
                  elem.dispatchEvent(event);
+             }
+             if ((display_value_option_id == 'None' || ci_type == 1) && e.querySelector("#" + control_item_id + " meter") != null){
+               e.querySelector("#" + control_item_id + " meter").value = r_val;
              }
          })
 
