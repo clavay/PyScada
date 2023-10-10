@@ -24,7 +24,7 @@ if(typeof(EventSource) !== "undefined") {
 
 clear();
 var cache_received = []
-var aget_cache_data_url = '/json/aget_cache_data/?variables=' + VARIABLE_KEYS + "&timestamp_from=0" // + DATA_FROM_TIMESTAMP
+var aget_cache_data_url = '/json/aget_cache_data/?variables=' + VARIABLE_KEYS + "&timestamp_from=" + DATA_FROM_TIMESTAMP
 var source_cache = new EventSource(aget_cache_data_url);
 source_cache.addEventListener("cache_data", function(evt) {
   console.log(JSON.parse(evt.data));
@@ -42,10 +42,13 @@ source_cache.onerror = (e) => {
 }
 console.log(cache_received);
 
+clear();
+var cache_received = []
 var aget_last_data_url = '/json/aget_last_data/?variables=' + VARIABLE_KEYS + "&variable_properties=" + VARIABLE_PROPERTY_KEYS + "&timestamp_from=0" // + DATA_FROM_TIMESTAMP
 var source_last = new EventSource(aget_last_data_url);
 source_last.addEventListener("cache_data", function(evt) {
   console.log(JSON.parse(evt.data));
+  cache_received.push(JSON.parse(evt.data));
   if (!JSON.parse(evt.data).length) {
 	  source_last.close();
   }
@@ -57,6 +60,8 @@ source_last.onerror = (e) => {
     console.log("aget last data ERROR !");
   }
 }
+console.log(cache_received);
+
 
 var aget_new_data_url = '/json/aget_new_data/?variables=' + VARIABLE_KEYS + "&variable_properties=" + VARIABLE_PROPERTY_KEYS + "&timestamp_from=" + DATA_FROM_TIMESTAMP
 var source_new = new EventSource(aget_new_data_url);

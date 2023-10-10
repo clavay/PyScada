@@ -231,7 +231,7 @@ def view(request, link_title):
             elif mc == "":
                 logger.info(f"Content of widget {widget} is empty")
             else:
-                main_content.append(dict(html=mc, widget=widget, topbar=sbc, title=widget.get_title()))
+                main_content.append(dict(html=mc, widget=widget, topbar=sbc))
 
             if sbc is not None:
                 sidebar_content.append(dict(html=sbc, widget=widget))
@@ -786,8 +786,9 @@ async def aget_cache_data(
 
     # get historical data from a list of variables and variable properties ids between 2 dates
     active_variables = []
+    logger.info(request.GET)
     if "variables" in request.GET:
-        active_variables = request.GET.getlist("variables")
+        active_variables = request.GET.get("variables").split(",")
         active_variables = list(int_filter(active_variables))
     active_variable_properties = []
     if "variable_properties" in request.GET:
@@ -819,11 +820,11 @@ async def aget_last_data(
     # get last value from a list of variables and variable properties ids between 2 dates
     active_variables = []
     if "variables" in request.GET:
-        active_variables = request.GET.getlist("variables")
+        active_variables = request.GET.get("variables").split(",")
         active_variables = list(int_filter(active_variables))
     active_variable_properties = []
     if "variable_properties" in request.GET:
-        active_variable_properties = request.GET.getlist("variable_properties")
+        active_variable_properties = request.GET.get("variable_properties").split(",")
     last_id = request.headers.get("Last-Event-ID")
 
     # get historical period if needed
@@ -856,7 +857,7 @@ async def aget_new_data(
     )
     response["Cache-Control"] = "no-cache"
     response["X-Accel-Buffering"] = "no"
-    response["Connection"] = "keep-alive"
+    #response["Connection"] = "keep-alive"
     return response
 
 
@@ -889,6 +890,7 @@ async def cache_data(
         )
 
     # close the connection
+    logger.info("closing")
     yield sse_message(
         event="cache_data",
         event_id=last_id + 1,
@@ -902,7 +904,7 @@ async def last_element(
     timestamp_from: int | None = None,
     timestamp_to: int | None = None,
     last_id: int | None = None,
-) -> AsyncGenerator[str, None]:
+):
 
     data = dict()
     last_id = 0 if last_id is None else last_id
@@ -912,9 +914,10 @@ async def last_element(
     if timestamp_from is None:
         timestamp_from = 0.0
     if timestamp_to is None:
-        timestamp_to = time.time() * 1000
+        timestamp_to = await time.time() * 1000
 
-    active_variables = [int(pk) for pk in active_variables]
+    logger.info(active_variables)
+    logger.info(active_variable_properties)
 
     variables = Variable.objects.filter(id__in=active_variables).aiterator()
     async for variable in variables:
@@ -926,16 +929,19 @@ async def last_element(
                 and variable.prev_value is not None
             ):
                 data = {"type": "variable", "id": variable.id, "timestamp": variable.timestamp_old * 1000, "value": variable.prev_value, "date_saved": variable.recordeddata.date_saved.timestamp()}
+                logger.info(data)
             else:
                 logger.info(f"no data for {variable} in {timestamp_from / 1000} - {timestamp_to / 1000 + 5}")
         else:
             logger.info(f"no data for {variable}")
 
+        logger.info("closing")
         yield sse_message(
             event="cache_data",
             event_id=last_id + 1,
             data=json.dumps(data),
         )
+
 
     async for vp in VariableProperty.objects.filter(
         pk__in=active_variable_properties
