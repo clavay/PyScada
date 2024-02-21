@@ -1047,7 +1047,7 @@ function set_config_from_hidden_config(type,filter_data,val,get_data,value){
                      var timestamp = DATA_TO_TIMESTAMP;
                      for (var key in STATUS_VARIABLE_KEYS){
                          if (typeof(CHART_VARIABLE_KEYS[key]) === 'undefined'){
-                             if(STATUS_VARIABLE_KEYS[key]<1){
+                             if(STATUS_VARIABLE_KEYS[key]<DATA_INIT_STATUS){
                                  STATUS_VARIABLE_KEYS[key]++;
                                  var_count++;
                                  vars.push(key);
@@ -2923,7 +2923,7 @@ function createOffset(date) {
              }
              DATA_TO_TIMESTAMP = Math.min(end.unix() * 1000, SERVER_TIME);
              DATA_BUFFER_SIZE = DATA_TO_TIMESTAMP - DATA_FROM_TIMESTAMP;
-             INIT_CHART_VARIABLES_DONE = false;
+             INIT_CHART_VARIABLES_DONE = INIT_STATUS_VARIABLES_DONE = false;
              $('.loadingAnimation').show()
          });
          $('#daterange').on('show.daterangepicker', function(ev, picker) {
@@ -4294,12 +4294,6 @@ function init_pyscada_content() {
          if (typeof(VARIABLE_PROPERTIES[key]) == 'undefined' && item_type === "variable_property"){
              VARIABLE_PROPERTIES[key] = 0;
          }
-     });
-
-     // Add calculated aggregated variable to CHART_VARIABLE_KEYS
-     $.each($('.calculatedvariable-config2'),function(key,val){
-         id = parseInt($(val).data('store-variable'));
-         CHART_VARIABLE_KEYS[id] = 0;
      });
 
      // Add control item variables with transform data (display value option) needing the whole data
