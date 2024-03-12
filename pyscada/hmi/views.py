@@ -839,6 +839,10 @@ def int_filter(someList):
 
 @unauthenticated_redirect
 def get_cache_data(request):
+    from django_eventstream import send_event
+
+    send_event("test", "message", {"text": "hello world"})
+
     if "init" in request.POST:
         init = bool(float(request.POST["init"]))
     else:

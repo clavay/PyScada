@@ -2,7 +2,6 @@
 
 import datetime
 from django.db import migrations, models
-from django.utils.timezone import utc
 
 
 class Migration(migrations.Migration):
@@ -26,7 +25,7 @@ class Migration(migrations.Migration):
             model_name="periodicfield",
             name="start_from",
             field=models.DateTimeField(
-                default=datetime.datetime(2021, 11, 15, 0, 0, tzinfo=utc),
+                default=datetime.datetime(2021, 11, 15, 0, 0, tzinfo=datetime.timezone.utc),
                 help_text="Calculate from this DateTime and then each period_factor*period",
             ),
         ),

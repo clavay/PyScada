@@ -2,6 +2,24 @@
 {% load i18n static %}
 
 {% block content %}
+<script src="{% static 'django_eventstream/eventsource.min.js' %}"></script>
+<script src="{% static 'django_eventstream/reconnecting-eventsource.js' %}"></script>
+<script>
+var es = new ReconnectingEventSource('/events/');
+
+es.addEventListener('message', function (e) {
+    console.log(e.data);
+}, false);
+
+es.addEventListener('stream-reset', function (e) {
+    console.log("init");
+    console.log(e.data);
+}, false);
+
+console.log("ok");
+
+</script>
+
 <div class="row">
     {% for view in view_list %}
         {% if view.visible %}
