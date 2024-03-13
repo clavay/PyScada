@@ -31,7 +31,7 @@ setup(
     platforms=["OS Independent"],
     classifiers=CLASSIFIERS,
     install_requires=[
-        "django>=5.2,<5.3",
+        "django>=5.0,<5.1",
         "numpy>=1.6.0",
         "h5py>=2.2.1",
         "pillow",
