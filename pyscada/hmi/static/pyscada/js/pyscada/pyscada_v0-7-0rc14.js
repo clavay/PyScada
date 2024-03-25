@@ -138,6 +138,12 @@ Licensed under the AGPL.
  var AUTO_UPDATE_ACTIVE = true;
 
  /**
+  * Use synchronous data handling
+  * @type {boolean}
+  */
+ var SYNC_HANDLING_DATA = true;
+
+ /**
   * Previous auto chart's data update button active
   * @type {boolean}
   */
@@ -4370,7 +4376,9 @@ function init_pyscada_content() {
          set_chart_selection_mode();
      });
 
-     PYSCADA_TIMEOUTS["data_handler"] = setTimeout(function() {data_handler();}, 5000);
+     if (SYNC_HANDLING_DATA) {
+        PYSCADA_TIMEOUTS["data_handler"] = setTimeout(function() {data_handler();}, 5000);
+     }
      set_chart_selection_mode();
 
 
