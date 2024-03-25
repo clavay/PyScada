@@ -12,6 +12,8 @@ from django.utils.timezone import now, make_aware, is_naive
 from django.db.models.signals import post_save
 from django.db.models.fields.related import OneToOneRel
 from django.forms.models import BaseInlineFormSet
+from django.apps import apps
+from django.db.models import Q
 
 from pyscada.utils import blow_up_data, timestamp_to_datetime
 from pyscada.utils import _get_objects_for_html as get_objects_for_html
@@ -1469,10 +1471,17 @@ class DataSource(models.Model):
         :return:
         """
         try:
-            pass
+            if apps.is_installed("pyscada.sse"):
+                from pyscada.sse.models import Historic
+                for hst in Historic.objects.filter(updated__gte=datetime.datetime.now(tz=datetime.timezone.utc)-datetime.timedelta(days=1)).filter(Q(variables__in=[variable]) | Q(status_variables__in=[variable])).distinct():
+                    timestamp = 0
+                    for t, v in variable.cached_values_to_write:
+                        timestamp = max(timestamp, t)
+                    logger.debug({f"data_sse {hst}": {variable.id: variable.cached_values_to_write}})
+                    hst.send_message({"data": {variable.id: variable.cached_values_to_write, "timestamp": timestamp}})
         except:
             logger.error(
-                f"{self.name}, unhandled exception in COV Receiver application",
+                f"{self}, unhandled exception in COV Receiver application",
                 exc_info=True,
             )
 
@@ -1494,9 +1503,14 @@ class DataSource(models.Model):
         )
 
     def write_multiple(self, **kwargs):
+        logger.info(kwargs)
+        for item in kwargs.get("items", []):
+            if len(item.cached_values_to_write):
+                self._send_cov_notification(item)
+            else:
+                logger.info(f"{item} has no cached values")
         if self.get_related_datasource() is not None:
             self.get_related_datasource().write_multiple(**kwargs)
-            items = kwargs.pop("items") if "items" in kwargs else []
             return True
         logger.warning(
             f"{self._meta.object_name} class needs to override the write_multiple function."
@@ -1591,14 +1605,13 @@ class DjangoDatabase(models.Model):
         for item in items:
             logger.debug(f"{item} has {len(item.cached_values_to_write)} to write.")
             if len(item.cached_values_to_write):
-                self.datasource._send_cov_notification(item)
                 for cached_value in item.cached_values_to_write:
                     # add date saved if not exist in variable object, if date_saved is in kwargs it will be used instead of the variable.date_saved (see the create_data_element_from_variable function)
                     if not hasattr(item, "date_saved") or item.date_saved is None:
                         item.date_saved = date_saved
                     # create the recorded data object
                     rc = data_model.objects.create_data_element_from_variable(
-                        item, cached_value[0], cached_value[1], **kwargs
+                        item, cached_value[1], cached_value[0], **kwargs
                     )
                     # append the object to the elements to save
                     if rc is not None:
