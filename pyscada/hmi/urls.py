@@ -5,7 +5,6 @@ from django.urls import path, include
 from . import views
 from pyscada.admin import admin_site
 from django.contrib.auth import views as auth_views
-import django_eventstream
 
 urlpatterns = [
     # Public pages
@@ -47,5 +46,4 @@ urlpatterns = [
         views.get_hidden_config2,
         name="get-hidden-config2",
     ),
-    path("events/", include(django_eventstream.urls), {"channels": ["test"]}),
 ]
