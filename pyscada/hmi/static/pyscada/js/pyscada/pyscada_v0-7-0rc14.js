@@ -1288,7 +1288,7 @@ function createOffset(date) {
      }
      UPDATE_STATUS_COUNT = 0;
      hide_update_status();
-     if(request_data.init===1){
+     if(typeof request_data != "undefined" && request_data.init===1){
          hide_init_status();
      }
      FETCH_DATA_PENDING--;
@@ -1325,7 +1325,7 @@ function createOffset(date) {
          }
      }
      //hide_update_status();
-     if(request_data.init===1){
+     if(typeof request_data != "undefined" && request_data.init===1){
          for (key in request_data.variables){
              key = request_data.variables[key];
              if (typeof(CHART_VARIABLE_KEYS[key]) === 'number'){
